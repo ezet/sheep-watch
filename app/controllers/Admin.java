@@ -9,4 +9,16 @@ public class Admin extends Controller {
 	public static Result index() {
 		return TODO;
 	}
+	
+	public static Result login() {
+		return TODO;
+	}
+	
+	public static Result logout() {
+		return TODO;
+	}
+	
+	public static Result save() {
+		return TODO;
+	}
 }

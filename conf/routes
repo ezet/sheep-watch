@@ -6,15 +6,15 @@
 GET     /                           controllers.Application.index()
 
 #Sheep pages
-GET 	/sheep						controllers.Application.sheep()
-POST 	/sheep/:id/					controllers.Application.viewSheep(id: Long)
-POST	/sheep 						controllers.Application.newSheep()
-POST	/sheep/:id/edit				controllers.Application.editSheep(id: Long)
-POST	/sheep/:id/delete			controllers.Application.deleteSheep(id: Long)
+GET 	/sheep						controllers.Sheep.index()
+POST 	/sheep/:id					controllers.Sheep.show(id: Long)
+PUT		/sheep 						controllers.Sheep.add()
+PUT		/sheep/:id/edit				controllers.Sheep.edit(id: Long)
+DELETE	/sheep/:id/delete			controllers.Sheep.delete(id: Long)
 
 #Event pages
-GET		/events						controllers.Application.events()
-POST	/event/:id/					controllers.Application.viewEvent(id: Long)
+GET		/events						controllers.Events.index()
+POST	/events/:id					controllers.Events.show(id: Long)
 		
 
 # Admin pages
