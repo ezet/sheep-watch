@@ -16,4 +16,5 @@ bin-release/
 .flexProperties
 .settings/
 .project
+.classpath
 >>>>>>> refs/remotes/origin/master
