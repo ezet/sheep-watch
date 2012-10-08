@@ -7,6 +7,6 @@ import views.html.index;
 public class Admin extends Controller {
 
 	public static Result index() {
-		return ok("Admin page");
+		return TODO;
 	}
 }
