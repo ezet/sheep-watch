@@ -2,15 +2,15 @@ package controllers;
 
 import models.Contact;
 import models.Producer;
+import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.application.index;
-import play.data.Form;
 
 public class Application extends Controller {
 
 	public static Result index() {
-		return ok(index.render(new models.Producer(123, new Contact(null, null, null, null))));
+		return ok(index.render(new Producer(123, new Contact(null, null, null, null))));
 	}
 	
 	public static Result settings() {
@@ -18,8 +18,7 @@ public class Application extends Controller {
 	}
 
 	public static Result login() {
-		Form<Producer> userForm = form(Producer.class);
-		return ok(views.html.application.login.render(userForm));
+		return TODO;
 	}
 	
 	public static Result authenticate() {
