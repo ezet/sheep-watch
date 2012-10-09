@@ -65,6 +65,66 @@ public class User extends Model {
 		this.isAdmin = isAdmin;
 	}
 
+	public long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public int getTimeCreated() {
+		return timeCreated;
+	}
+
+	public void setTimeCreated(int timeCreated) {
+		this.timeCreated = timeCreated;
+	}
+
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+
+	public void setAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+
+	public Contact getContactInfo() {
+		return contactInfo;
+	}
+
+	public void setContactInfo(Contact contactInfo) {
+		this.contactInfo = contactInfo;
+	}
+
+	public static Model.Finder<String, User> getFind() {
+		return find;
+	}
+
+	public static void setFind(Model.Finder<String, User> find) {
+		User.find = find;
+	}
+
+	public long getProducerId() {
+		return producerId;
+	}
+
 	public String toString() {
 		return "User(" + username + ")";
 	}
