@@ -21,12 +21,12 @@ DELETE	/sheep/:id					controllers.Sheep.delete(id: Long)
 GET		/events						controllers.Events.index()
 GET		/events/:id					controllers.Events.show(id: Long)
 GET		/events/alarms				controllers.Events.alarms()
-GET		/events/alarms/recent/:num	controllers.events.recentAlarms(num: Long)
-GET		/events/exceptions/recent/:num	controllers.events.recentExceptions(num: Long)
+GET		/events/alarms/recent/:num	controllers.Events.recentAlarms(num: Long)
+GET		/events/exceptions/recent/:num	controllers.Events.recentExceptions(num: Long)
 
 # Map
-GET		/map/sheep/:id				controllers.map.sheep(id: Long)
-GET		/map/event/:id				controllers.map.event(id: Long)
+GET		/map/sheep/:id				controllers.Map.sheep(id: Long)
+GET		/map/event/:id				controllers.Map.event(id: Long)
 
 # Misc
 GET		/settings					controllers.Application.settings()
