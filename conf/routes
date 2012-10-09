@@ -31,6 +31,7 @@ GET		/map/event/:id				controllers.map.event(id: Long)
 # Misc
 GET		/settings					controllers.Application.settings()
 GET		/search/:term				controllers.Application.search(term: String)
+GET		/help						controllers.Application.help()
 		
 
 # Admin pages
