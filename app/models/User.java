@@ -1,14 +1,52 @@
 package models;
 
-public class User {
-	private long userId;
-	private final long producerId;
-	private String username;
-	private String password;
-	private int timeCreated;
-	private boolean isAdmin;
-	private Contact contactInfo;
-	
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import play.data.format.Formats;
+import play.data.validation.Constraints;
+import play.db.ebean.Model;
+
+@Entity
+@Table(name = "user")
+public class User extends Model {
+
+	@Id
+	@Constraints.Required
+	public long userId;
+
+	@Constraints.Required
+	public final long producerId;
+
+	@Constraints.Required
+	@Constraints.Email
+	public String username;
+
+	@Constraints.Required
+	@Formats.NonEmpty
+	public String password;
+
+	public int timeCreated;
+	public boolean isAdmin;
+	public Contact contactInfo;
+
+	public static Model.Finder<String, User> find = new Model.Finder<String, User>(String.class, User.class);
+
+	public static List<User> findAll() {
+		return find.all();
+	}
+
+	public static User findByUsername(String username) {
+		return find.where().eq("username", username).findUnique();
+	}
+
+	public static User authenticate(String username, String password) {
+		return find.where().eq("username", username).eq("password", password).findUnique();
+	}
+
 	public User() {
 		producerId = 0;
 	}
@@ -27,40 +65,8 @@ public class User {
 		this.isAdmin = isAdmin;
 	}
 
-	public Contact getContactInfo() {
-		return contactInfo;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public long getUserId() {
-		return userId;
-	}
-
-	public long getProducerId() {
-		return producerId;
-	}
-
-	public int getTimeCreated() {
-		return timeCreated;
-	}
-
-	public boolean isAdmin() {
-		return isAdmin;
+	public String toString() {
+		return "User(" + username + ")";
 	}
 
 }
