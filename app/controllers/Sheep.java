@@ -17,7 +17,7 @@ public class Sheep extends Controller {
 		  return TODO;
 	  }
 	  
-	  public static Result edit(long id) {
+	  public static Result update(long id) {
 		  return TODO;
 	  }
 	  

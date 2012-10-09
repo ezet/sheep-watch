@@ -2,7 +2,7 @@ package controllers;
 
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.index;
+import play.mvc.Security.Authenticated;
 
 public class Admin extends Controller {
 
@@ -18,7 +18,11 @@ public class Admin extends Controller {
 		return TODO;
 	}
 	
-	public static Result save() {
+	public static Result submit() {
+		return TODO;
+	}
+	
+	public static Result authenticate() {
 		return TODO;
 	}
 }

@@ -1,6 +1,5 @@
 package models;
 
-
 public class User {
 	private long userId;
 	private final long producerId;
@@ -10,8 +9,16 @@ public class User {
 	private boolean isAdmin;
 	private Contact contactInfo;
 	
-	public User(long userId, long producerId, String username, String password,
-			int timeCreated, boolean isAdmin) {
+	public User() {
+		producerId = 0;
+	}
+
+	public User(long producerId, Contact contactInfo) {
+		this.contactInfo = contactInfo;
+		this.producerId = producerId;
+	}
+
+	public User(long userId, long producerId, String username, String password, int timeCreated, boolean isAdmin) {
 		this.userId = userId;
 		this.producerId = producerId;
 		this.username = username;
@@ -19,12 +26,8 @@ public class User {
 		this.timeCreated = timeCreated;
 		this.isAdmin = isAdmin;
 	}
-	public User(long producerId, Contact contactInfo){
-		this.contactInfo=contactInfo;
-		this.producerId=producerId;
-	}
-	
-	public Contact getContactInfo(){
+
+	public Contact getContactInfo() {
 		return contactInfo;
 	}
 
@@ -59,6 +62,5 @@ public class User {
 	public boolean isAdmin() {
 		return isAdmin;
 	}
-	
-	
+
 }

@@ -11,5 +11,17 @@ public class Events extends Controller {
 	public static Result index() {
 		return TODO;
 	}
+	
+	public static Result alarms() {
+		return TODO;
+	}
+	
+	public static Result recentAlarms(Long num) {
+		return TODO;
+	}
+	
+	public static Result recentExceptions(Long num) {
+		return TODO;
+	}
 
 }

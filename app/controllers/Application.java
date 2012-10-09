@@ -1,20 +1,28 @@
 package controllers;
 
+import models.Contact;
+import models.User;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.index;
+import views.html.application.index;
+import play.data.Form;
 
 public class Application extends Controller {
 
 	public static Result index() {
-		return TODO;
+		return ok(index.render(new models.User(123, new Contact(null, null, null, null))));
 	}
-
+	
 	public static Result settings() {
-		return TODO;
+		return ok(views.html.application.settings.render("settings"));
 	}
 
 	public static Result login() {
+		Form<User> userForm = form(User.class);
+		return ok(views.html.application.login.render(userForm));
+	}
+	
+	public static Result authenticate() {
 		return TODO;
 	}
 
@@ -23,6 +31,14 @@ public class Application extends Controller {
 	}
 	
 	public static Result saveContacts() {
+		return TODO;
+	}
+	
+	public static Result search(String term) {
+		return TODO;
+	}
+	
+	public static Result help() {
 		return TODO;
 	}
 
