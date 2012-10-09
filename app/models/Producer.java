@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import play.data.format.Formats;
@@ -11,14 +12,15 @@ import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
 @Entity
-@Table(name = "user")
-public class User extends Model {
+@Table(name = "producer")
+public class Producer extends Model {
 
 	@Id
 	@Constraints.Required
-	public long userId;
+	public long id;
 
 	@Constraints.Required
+	@ManyToOne
 	public final long producerId;
 
 	@Constraints.Required
@@ -33,31 +35,31 @@ public class User extends Model {
 	public boolean isAdmin;
 	public Contact contactInfo;
 
-	public static Model.Finder<String, User> find = new Model.Finder<String, User>(String.class, User.class);
+	public static Model.Finder<String, Producer> find = new Model.Finder<String, Producer>(String.class, Producer.class);
 
-	public static List<User> findAll() {
+	public static List<Producer> findAll() {
 		return find.all();
 	}
 
-	public static User findByUsername(String username) {
+	public static Producer findByUsername(String username) {
 		return find.where().eq("username", username).findUnique();
 	}
 
-	public static User authenticate(String username, String password) {
+	public static Producer authenticate(String username, String password) {
 		return find.where().eq("username", username).eq("password", password).findUnique();
 	}
 
-	public User() {
+	public Producer() {
 		producerId = 0;
 	}
 
-	public User(long producerId, Contact contactInfo) {
+	public Producer(long producerId, Contact contactInfo) {
 		this.contactInfo = contactInfo;
 		this.producerId = producerId;
 	}
 
-	public User(long userId, long producerId, String username, String password, int timeCreated, boolean isAdmin) {
-		this.userId = userId;
+	public Producer(long id, long producerId, String username, String password, int timeCreated, boolean isAdmin) {
+		this.id = id;
 		this.producerId = producerId;
 		this.username = username;
 		this.password = password;
@@ -65,12 +67,12 @@ public class User extends Model {
 		this.isAdmin = isAdmin;
 	}
 
-	public long getUserId() {
-		return userId;
+	public long getId() {
+		return id;
 	}
 
-	public void setUserId(long userId) {
-		this.userId = userId;
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public String getUsername() {
@@ -113,12 +115,12 @@ public class User extends Model {
 		this.contactInfo = contactInfo;
 	}
 
-	public static Model.Finder<String, User> getFind() {
+	public static Model.Finder<String, Producer> getFind() {
 		return find;
 	}
 
-	public static void setFind(Model.Finder<String, User> find) {
-		User.find = find;
+	public static void setFind(Model.Finder<String, Producer> find) {
+		Producer.find = find;
 	}
 
 	public long getProducerId() {
