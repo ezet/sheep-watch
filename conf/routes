@@ -5,20 +5,40 @@
 # Home page
 GET     /                           controllers.Application.index()
 
-#Sheep pages
-GET 	/sheep						controllers.Sheep.index()
-POST 	/sheep/:id					controllers.Sheep.show(id: Long)
-PUT		/sheep 						controllers.Sheep.add()
-PUT		/sheep/:id/edit				controllers.Sheep.edit(id: Long)
-DELETE	/sheep/:id/delete			controllers.Sheep.delete(id: Long)
+# Authentication
+GET 	/login						controllers.Application.login()
+POST	/login						controllers.Application.authenticate()
+GET		/logout 					controllers.Application.logout()
 
-#Event pages
+# Sheep
+GET 	/sheep						controllers.Sheep.index()
+GET 	/sheep/:id					controllers.Sheep.show(id: Long)
+POST	/sheep 						controllers.Sheep.add()
+PUT		/sheep/:id					controllers.Sheep.update(id: Long)
+DELETE	/sheep/:id					controllers.Sheep.delete(id: Long)
+
+# Events
 GET		/events						controllers.Events.index()
-POST	/events/:id					controllers.Events.show(id: Long)
+GET		/events/:id					controllers.Events.show(id: Long)
+GET		/events/alarms				controllers.Events.alarms()
+GET		/events/alarms/recent/:num	controllers.events.recentAlarms(num: Long)
+GET		/events/exceptions/recent/:num	controllers.events.recentExceptions(num: Long)
+
+# Map
+GET		/map/sheep/:id				controllers.map.sheep(id: Long)
+GET		/map/event/:id				controllers.map.event(id: Long)
+
+# Misc
+GET		/settings					controllers.Application.settings()
+GET		/search/:term				controllers.Application.search(term: String)
 		
 
 # Admin pages
 GET 	/admin						controllers.Admin.index()
+GET		/admin/login				controllers.Admin.login()
+POST	/admin/login				controllers.Admin.authenticate()
+GET		/admin/logout				controllers.Admin.logout()
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
