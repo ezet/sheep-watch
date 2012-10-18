@@ -11,9 +11,14 @@ public class Application extends Controller {
 		return ok(views.html.application.index.render("Sheep Watch"));
 	}
 	
+	public static Result app() {
+		return ok(views.html.application.app.render(null));
+	}
+	
 	public static Result settings() {
 		return ok(views.html.application.settings.render("settings"));
 	}
+	
 
 	public static Result login() {
 		return ok(views.html.application.index.render("Login"));
