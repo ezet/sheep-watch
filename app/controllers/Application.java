@@ -43,5 +43,13 @@ public class Application extends Controller {
 	public static Result help() {
 		return TODO;
 	}
+	
+	public static Result about() {
+		return TODO;
+	}
+	
+	public static Result contact() {
+		return TODO;
+	}
 
 }
