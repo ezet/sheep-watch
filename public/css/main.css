@@ -1,6 +1,6 @@
 body {
-	padding-top: 60px;
-	padding-bottom: 40px;
+	padding-top: 20px;
+	padding-bottom: 20px;
 }
 
 .section {
@@ -10,13 +10,16 @@ body {
 }
 
 #left-column {
+	width: 20%;
 	float: left;
 }
 
 #main {
+	width: 50%;
 	float: left;
 }
 
 #right-column {
+	width: 20%;
 	float: left;
 }

@@ -28,14 +28,55 @@
 		<!--[if lt IE 7]>
 	            <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
 	    <![endif]-->
-		<div id="wrapper">
-			<div id="header" class="section"></div>
+	    
+	           <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="#">Sheep Watch</a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav">
+                            <li class="active"><a href="#">Home</a></li>
+                            <li><a href="#about">About</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Action</a></li>
+                                    <li><a href="#">Another action</a></li>
+                                    <li><a href="#">Something else here</a></li>
+                                    <li class="divider"></li>
+                                    <li class="nav-header">Nav header</li>
+                                    <li><a href="#">Separated link</a></li>
+                                    <li><a href="#">One more separated link</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <form class="navbar-form pull-right">
+                            <button type="submit" class="btn">Sign out</button>
+                        </form>
+                    </div><!--/.nav-collapse -->
+                </div>
+            </div>
+        </div> <!-- /navbar -->
+
+        <div class="container">
+
 			<div id="left-column" class="section"></div>
 			<div id="main" class="section">@content</div>
 			<div id="right-column" class="section"></div>
-	
-		</div>
-		
+
+            <hr>
+
+            <footer>
+                <p>&copy; Sheep Watch 2012</p>
+            </footer>
+
+        </div> <!-- /container -->
 		
 		<script
 			src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>

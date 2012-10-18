@@ -8,7 +8,7 @@ import play.mvc.Result;
 public class Application extends Controller {
 
 	public static Result index() {
-		return ok(views.html.application.index.render(new Producer(123, new Contact(null, null, null, null))));
+		return ok(views.html.application.index.render("Sheep Watch"));
 	}
 	
 	public static Result settings() {
@@ -16,7 +16,7 @@ public class Application extends Controller {
 	}
 
 	public static Result login() {
-		return TODO;
+		return ok(views.html.application.index.render("Login"));
 	}
 	
 	public static Result authenticate() {
