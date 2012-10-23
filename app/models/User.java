@@ -12,7 +12,7 @@ import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
 @Entity
-@Table(name = "producer")
+@Table(name = "User")
 public class User extends Model {
 
 	@Id
@@ -21,7 +21,7 @@ public class User extends Model {
 
 	@Constraints.Required
 	@ManyToOne
-	public final long producerId;
+	public  long producerId;
 
 	@Constraints.Required
 	@Constraints.Email
@@ -47,80 +47,6 @@ public class User extends Model {
 
 	public static User authenticate(String username, String password) {
 		return find.where().eq("username", username).eq("password", password).findUnique();
-	}
-
-	public User() {
-		producerId = 0;
-	}
-
-	public User(long producerId, Contact contactInfo) {
-		this.contactInfo = contactInfo;
-		this.producerId = producerId;
-	}
-
-	public User(long id, long producerId, String username, String password, int timeCreated, boolean isAdmin) {
-		this.id = id;
-		this.producerId = producerId;
-		this.username = username;
-		this.password = password;
-		this.timeCreated = timeCreated;
-		this.isAdmin = isAdmin;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public long getProducerId() {
-		return producerId;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public int getTimeCreated() {
-		return timeCreated;
-	}
-
-	public void setTimeCreated(int timeCreated) {
-		this.timeCreated = timeCreated;
-	}
-
-	public boolean isAdmin() {
-		return isAdmin;
-	}
-
-	public void setAdmin(boolean isAdmin) {
-		this.isAdmin = isAdmin;
-	}
-
-	public Contact getContactInfo() {
-		return contactInfo;
-	}
-
-	public void setContactInfo(Contact contactInfo) {
-		this.contactInfo = contactInfo;
-	}
-
-	public String toString() {
-		return "User(" + username + ")";
 	}
 
 }
