@@ -1,48 +1,40 @@
 package models;
 
+import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+import play.db.ebean.Model;
 
-public class Sheep {
+@Entity
+@Table(name = "Sheep")
+public class Sheep extends Model {
+
+	@Id
+	public long id;
+	public long producerId;
+	public long sheepId;
+	public long rfid;
+	public String name;
+	public long timeOfBirth;
+	public double birthWeight;
+	public String notes;
+	public boolean attacked;
+	public long timeAdded;
 	
-	private long id;
-	private String name;
-	private Date birthWeek;
-	private double birthWeight;
-	
-	// Det bør vurderes om vi trenger flere konstruktører
-	public Sheep(long id){
-		this.id = id;
-	}
-	
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Date getBirthWeek() {
-		return birthWeek;
-	}
-
-	public void setBirthWeek(Date birthWeek) {
-		this.birthWeek = birthWeek;
-	}
-
-	public double getBirthWeight() {
-		return birthWeight;
-	}
-
-	public void setBirthWeight(double birthWeight) {
-		this.birthWeight = birthWeight;
-	}
-
-	public long getId() {
-		return id;
-	}
 	
 
+	public static Model.Finder<Long, Sheep> find = new Model.Finder<Long, Sheep>(Long.class, Sheep.class);
+	public static Model.Finder<String, Sheep> findByName = new Model.Finder<String, Sheep>(String.class, Sheep.class);
+
+	public static List<Sheep> findAll() {
+		return find.all();
+	}
+
+	public static List<Sheep> findByName(String name) {
+		return findByName.where().eq("name", name).findList();
+	}
 
 }
