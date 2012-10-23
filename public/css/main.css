@@ -33,6 +33,24 @@ body {
 #footer {
 	float: bottom;
 }
+.boxes {
+	border: 1px solid black;
+	margin: 0 0 0 0;
+}
+#right-box{
+	float: right;
+	width: 64%;	
+	
+}
+#left-box{
+	float: left;
+	width: 34%;	
+}
+#main-box{
+	height: 600px;
+}
+
+
 #search {
 
 }
