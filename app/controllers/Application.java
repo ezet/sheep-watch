@@ -1,31 +1,41 @@
 package controllers;
 
-import models.Contact;
-import models.Producer;
+import models.Login;
+import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.application.*;
 
 public class Application extends Controller {
-
+	
 	public static Result index() {
-		return ok(views.html.application.login.render("Sheep Watch"));
+//		return ok(views.html.application.login.render("Sheep Watch"));
+		return TODO;
 	}
 	
 	public static Result app() {
-		return ok(views.html.application.index.render(null));
+		return ok(index.render(null));
 	}
 	
 	public static Result settings() {
-		return ok(views.html.application.settings.render("settings"));
+		return ok(settings.render("settings"));
 	}
 	
 
 	public static Result login() {
-		return ok(views.html.application.login.render("Login"));
+		return ok(login.render(form(Login.class)));
 	}
 	
 	public static Result authenticate() {
-		return TODO;
+        Form<Login> loginForm = form(Login.class).bindFromRequest();
+        if(loginForm.hasErrors()) {
+            return badRequest(login.render(loginForm));
+        } else {
+            session("email", loginForm.get().username);
+            return redirect(
+                routes.Application.help()
+            );
+        }
 	}
 
 	public static Result logout() {

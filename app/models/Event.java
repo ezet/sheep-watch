@@ -25,7 +25,7 @@ public class Event extends Model {
 	public final long producerId;
 
 	@ManyToOne
-	public Producer producer;
+	public User producer;
 
 	@Constraints.Required
 	public final long rfid;

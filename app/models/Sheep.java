@@ -1,20 +1,38 @@
 package models;
 
+import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+import play.db.ebean.Model;
 
-public class Sheep {
-	
+@Entity
+@Table(name = "sheep")
+public class Sheep extends Model {
+
+	@Id
 	private long id;
 	private String name;
-	private Date birthWeek;
+	private Date birthDate;
 	private double birthWeight;
-	
-	// Det bør vurderes om vi trenger flere konstruktører
-	public Sheep(long id){
+
+	public static Model.Finder<Long, Sheep> find = new Model.Finder<Long, Sheep>(Long.class, Sheep.class);
+	public static Model.Finder<String, Sheep> findByName = new Model.Finder<String, Sheep>(String.class, Sheep.class);
+
+	public static List<Sheep> findAll() {
+		return find.all();
+	}
+
+	public static List<Sheep> findByName(String name) {
+		return findByName.where().eq("name", name).findList();
+	}
+
+	public Sheep(long id) {
 		this.id = id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -23,12 +41,12 @@ public class Sheep {
 		this.name = name;
 	}
 
-	public Date getBirthWeek() {
-		return birthWeek;
+	public Date getBirthDate() {
+		return birthDate;
 	}
 
-	public void setBirthWeek(Date birthWeek) {
-		this.birthWeek = birthWeek;
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
 	}
 
 	public double getBirthWeight() {
@@ -42,7 +60,5 @@ public class Sheep {
 	public long getId() {
 		return id;
 	}
-	
-
 
 }

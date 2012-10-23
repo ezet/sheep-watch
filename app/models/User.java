@@ -13,7 +13,7 @@ import play.db.ebean.Model;
 
 @Entity
 @Table(name = "producer")
-public class Producer extends Model {
+public class User extends Model {
 
 	@Id
 	@Constraints.Required
@@ -35,30 +35,30 @@ public class Producer extends Model {
 	public boolean isAdmin;
 	public Contact contactInfo;
 
-	public static Model.Finder<String, Producer> find = new Model.Finder<String, Producer>(String.class, Producer.class);
+	public static Model.Finder<String, User> find = new Model.Finder<String, User>(String.class, User.class);
 
-	public static List<Producer> findAll() {
+	public static List<User> findAll() {
 		return find.all();
 	}
 
-	public static Producer findByUsername(String username) {
+	public static User findByUsername(String username) {
 		return find.where().eq("username", username).findUnique();
 	}
 
-	public static Producer authenticate(String username, String password) {
+	public static User authenticate(String username, String password) {
 		return find.where().eq("username", username).eq("password", password).findUnique();
 	}
 
-	public Producer() {
+	public User() {
 		producerId = 0;
 	}
 
-	public Producer(long producerId, Contact contactInfo) {
+	public User(long producerId, Contact contactInfo) {
 		this.contactInfo = contactInfo;
 		this.producerId = producerId;
 	}
 
-	public Producer(long id, long producerId, String username, String password, int timeCreated, boolean isAdmin) {
+	public User(long id, long producerId, String username, String password, int timeCreated, boolean isAdmin) {
 		this.id = id;
 		this.producerId = producerId;
 		this.username = username;
@@ -73,6 +73,10 @@ public class Producer extends Model {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public long getProducerId() {
+		return producerId;
 	}
 
 	public String getUsername() {
@@ -113,18 +117,6 @@ public class Producer extends Model {
 
 	public void setContactInfo(Contact contactInfo) {
 		this.contactInfo = contactInfo;
-	}
-
-	public static Model.Finder<String, Producer> getFind() {
-		return find;
-	}
-
-	public static void setFind(Model.Finder<String, Producer> find) {
-		Producer.find = find;
-	}
-
-	public long getProducerId() {
-		return producerId;
 	}
 
 	public String toString() {

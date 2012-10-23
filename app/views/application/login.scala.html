@@ -1,6 +1,6 @@
-@(title: String)
+@(form: Form[models.Login])
 
-@head(title)
+@head("Login")
 	    
 	           <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="navbar-inner">
@@ -29,11 +29,23 @@
                                 </ul>
                             </li>
                         </ul>
-                        <form class="navbar-form pull-right">
-                            <input class="span2" type="text" placeholder="Email">
-                            <input class="span2" type="password" placeholder="Password">
-                            <button type="submit" class="btn">Sign in</button>
-                        </form>
+                        <!-- <form class="navbar-form pull-right"> -->
+                        
+                        @helper.form(routes.Application.authenticate) {
+                        	@if(form.hasGlobalErrors) {
+                        		<p class="error">
+                        			@form.globalError.message
+                        		</p>
+                        	}
+                        	@if(flash.contains("success")) {
+                        	<p class="success">
+                        		@flash.get("success")
+                        	</p>
+                        	}
+                            <input class="span2" name="username"  type="email" placeholder="Email" value="@form("username").value">
+                            <input class="span2" name="password" type="password" placeholder="Password">
+                            <button class="btn" type="submit">Sign in</button>
+                        }
                     </div><!--/.nav-collapse -->
                 </div>
             </div>
