@@ -28,66 +28,25 @@
                                     <li><a href="#">One more separated link</a></li>
                                 </ul>
                             </li>
-                            <li><a><form method="get" action="/search" id="search">
-                            	<input name="q" type="text" size="40" placeholder="Search sheep" />
-                            </form>
-                            </a></li>
                         </ul>
-                        @helper.form(action = routes.Application.logout, 'class -> "navbar-form, pull-right") {
+                        <form class="navbar-form pull-right">
                             <button type="submit" class="btn">Sign out</button>
-                            }
+                        </form>
                     </div><!--/.nav-collapse -->
                 </div>
             </div>
         </div> <!-- /navbar -->
 
         <div class="container">
-			<div id="left-column" class="section">
-				<div id="left-box" class ="boxes">
-					<a href="#">Overview</a>
-				</div>
-				<div id="right-box" class ="boxes">
-					<a href="#">Sheep Control panel</a>
-				</div>
-				<div id="main-box" class ="boxes">
-					overview and sheep control panel				
-				</div>
-			</div>
-			<div id="main" class="section">
-				<div id="tabContainer">
-   					 <div class="tabs">
-      					<ul>
-					        <li id="tabHeader_1">Map</li>
-					        <li id="tabHeader_2">Sheep</li>
-					        <li id="tabHeader_3">Events</li>
-     					 </ul>
-   					 </div>
-			    <div class="tabscontent">
-			      <div class="tabpage" id="tabpage_1">
-			        <h2>Page 1</h2>
-			        <p>@content</p>
-			      </div>
-			      <div class="tabpage" id="tabpage_2">
-			        <h2>Page 2</h2>
-			        <p>@content</p>
-			      </div>
-			      <div class="tabpage" id="tabpage_3">
-			        <h2>Page 3</h2>
-			        <p>@content</p>
-			      </div>
-			    </div>
-			  </div>
-			</div>
-			<div id="right-column" class="section">
 
-			</div>
+			<div id="left-column" class="section"></div>
+			<div id="main" class="section">@content</div>
+			<div id="right-column" class="section"></div>
 
             <hr>
 
-            <footer> 
-            	<div id="footer">
+            <footer>
                 <p>&copy; Sheep Watch 2012</p>
-                </div>
             </footer>
 
         </div> <!-- /container -->
