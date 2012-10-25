@@ -17,6 +17,7 @@ public class Sheep extends Model {
 	public long id;
 	public long producerId;
 	public long sheepId;
+	@Required
 	public long rfid;
 	
 	public String name;
