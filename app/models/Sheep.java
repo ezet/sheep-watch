@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import play.api.data.validation.Constraint;
+import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 @Entity
