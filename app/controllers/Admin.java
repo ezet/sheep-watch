@@ -13,14 +13,18 @@ public class Admin extends Controller {
 
 	public static Result index() {
 		if (session("username") != null) {
-			return redirect(routes.Application.app());
+			return redirect(routes.Admin.cp());
 		}
-		return redirect(routes.Application.login());
+		return redirect(routes.Admin.login());
+	}
+	
+	public static Result cp() {
+		return TODO;
 	}
 
 	public static Result login() {
 		if (session("username") != null) {
-			return redirect(routes.Application.app());
+			return redirect(routes.Admin.cp());
 		}
 		return ok(login.render(form(Login.class)));
 	}
@@ -31,14 +35,14 @@ public class Admin extends Controller {
 			return badRequest(login.render(loginForm));
 		} else {
 			session("username", loginForm.get().username);
-			return redirect(routes.Application.index());
+			return redirect(routes.Admin.cp());
 		}
 	}
 
 	public static Result logout() {
 		session().clear();
 		flash("succes", "You have been logged out.");
-		return redirect(routes.Application.login());
+		return redirect(routes.Admin.login());
 	}
 	
 	public static Result list() {

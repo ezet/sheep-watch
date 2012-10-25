@@ -41,6 +41,7 @@ GET		/contact					controllers.Application.contact()
 
 # Admin pages
 GET 	/admin						controllers.Admin.index()
+GET 	/admin/cp					controllers.Admin.cp()
 GET		/admin/login				controllers.Admin.login()
 POST	/admin/login				controllers.Admin.authenticate()
 GET		/admin/logout				controllers.Admin.logout()
