@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import play.Logger;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
@@ -26,21 +27,29 @@ public class User extends Model {
 	@Constraints.Required
 	@Constraints.Email
 	public String username;
-
+	
 	@Constraints.Required
 	@Formats.NonEmpty
 	public String password;
-
+	
 	public int timeCreated;
 	public boolean isAdmin;
 	public Contact contactInfo;
 
 	public static Model.Finder<String, User> find = new Model.Finder<String, User>(String.class, User.class);
-
-	public static List<User> findAll() {
-		return find.all();
+	
+	public static User create() {
+		return new User();
 	}
 
+	public static List<User> findAll() {
+		Logger.debug("test");
+		System.out.println("test");
+//		for (User user : find.all()) {
+//		}
+		return find.all();
+	}
+	
 	public static User findByUsername(String username) {
 		return find.where().eq("username", username).findUnique();
 	}
