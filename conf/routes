@@ -52,6 +52,8 @@ POST	/admin/user					controllers.Admin.add()
 PUT		/admin/user/:id				controllers.Admin.update(id: Long)
 DELETE	/admin/user/:id				controllers.Admin.delete(id: Long)
 
+# Javascript routing
+GET     /assets/javascripts/routes  controllers.Application.javascriptRoutes()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
