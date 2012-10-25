@@ -2,7 +2,10 @@ package controllers;
 
 import models.Login;
 import models.User;
-import play.Logger;
+
+import org.codehaus.jackson.JsonNode;
+
+import play.Routes;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -55,10 +58,10 @@ public class Admin extends Controller {
 	}
 	
 	public static Result add() {
+		JsonNode json = request().body().asJson();
 		User user = form(User.class).bindFromRequest().get();
 		user.save();
 		return redirect(routes.Admin.cp());
-		
 	}
 	
 	public static Result update(long id) {
@@ -67,5 +70,15 @@ public class Admin extends Controller {
 	
 	public static Result delete(long id) {
 		return TODO;
+	}
+	
+	public static Result javascriptRoutes() {
+		response().setContentType("text/javascript");
+		return ok(Routes.javascriptRouter("jsAdminRoutes",
+
+				// Admin routes
+				controllers.routes.javascript.Admin.add()
+
+		));
 	}
 }

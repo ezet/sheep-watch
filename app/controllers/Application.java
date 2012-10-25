@@ -78,7 +78,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Sheep.index(),
 				controllers.routes.javascript.Sheep.add(),
 				controllers.routes.javascript.Sheep.delete()
-
+				
 		));
 	}
 
