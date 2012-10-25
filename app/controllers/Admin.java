@@ -2,12 +2,13 @@ package controllers;
 
 import models.Login;
 import models.User;
+import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.admin.cp;
 import views.html.admin.login;
-import views.html.admin.*;
+import views.html.admin.userlist;
 
 public class Admin extends Controller {
 
@@ -54,7 +55,10 @@ public class Admin extends Controller {
 	}
 	
 	public static Result add() {
-		return TODO;
+		User user = form(User.class).bindFromRequest().get();
+		user.save();
+		return redirect(routes.Admin.cp());
+		
 	}
 	
 	public static Result update(long id) {

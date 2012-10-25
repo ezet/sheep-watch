@@ -1,6 +1,8 @@
 @(userForm: Form[models.User])
 
-@helper.form(action = routes.Admin.add) {
+@import helper.twitterBootstrap._
+
+@helper.form(action = routes.Admin.add()) {
   
   @helper.inputText(userForm("username"))
   

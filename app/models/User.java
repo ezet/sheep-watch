@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import play.Logger;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
+import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 @Entity
@@ -17,19 +18,20 @@ import play.db.ebean.Model;
 public class User extends Model {
 
 	@Id
-	@Constraints.Required
 	public long id;
 
-	@Constraints.Required
-	@ManyToOne
+	@Required
+//	@ManyToOne
 	public  long producerId;
 
 	@Constraints.Required
-	@Constraints.Email
+//	@Constraints.Email
 	public String username;
 	
-	@Constraints.Required
-	@Formats.NonEmpty
+//	public String name;
+	
+	@Required
+//	@Formats.NonEmpty
 	public String password;
 	
 	public int timeCreated;
