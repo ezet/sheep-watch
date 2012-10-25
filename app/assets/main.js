@@ -1,0 +1,1 @@
+jsRoutes.controllers.Admin.add().ajax({})
