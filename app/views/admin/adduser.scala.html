@@ -1,0 +1,12 @@
+@(userForm: Form[models.User])
+
+@helper.form(action = routes.Admin.add) {
+  
+  @helper.inputText(userForm("username"))
+  
+  @helper.inputText(userForm("password"))
+  
+  <button class="btn" type="submit">Add user</button>
+  
+}
+
