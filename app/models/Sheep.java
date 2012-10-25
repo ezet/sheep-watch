@@ -6,6 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+<<<<<<< HEAD
+import play.api.data.validation.Constraint;
+=======
+>>>>>>> branch 'master' of http://github.com/ezet/sheep-watch.git
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
