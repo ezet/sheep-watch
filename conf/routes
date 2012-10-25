@@ -45,6 +45,12 @@ GET		/admin/login				controllers.Admin.login()
 POST	/admin/login				controllers.Admin.authenticate()
 GET		/admin/logout				controllers.Admin.logout()
 
+GET		/admin/users				controllers.Admin.list()
+GET		/admin/user/:id				controllers.Admin.show(id: Long)
+POST	/admin/user					controllers.Admin.add()
+PUT		/admin/user/:id				controllers.Admin.update(id: Long)
+DELETE	/admin/user/:id				controllers.Admin.delete(id: Long)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
