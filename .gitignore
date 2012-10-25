@@ -16,4 +16,3 @@ bin-release/
 .settings/
 .project
 .classpath
-conf/application.conf
