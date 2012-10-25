@@ -1,0 +1,7 @@
+@(users: List[models.User])
+
+<ul>
+@for(user <- users) {
+	<li>@user.getUsername()</li>
+}
+</ul>
