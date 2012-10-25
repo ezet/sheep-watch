@@ -1,0 +1,17 @@
+@(userForm: Form[models.Sheep])
+
+@helper.form(action = routes.Application.add) {
+  
+  @helper.inputText(userForm("sheepId"))
+  
+  @helper.inputText(userForm("rfid"))
+  
+  @helper.inputText(userForm("name"))
+  
+  @helper.inputText(userForm("birthWeight"))
+  
+  @helper.inputText(userForm("timeOfBirth"))
+  
+  <button class="btn" type="submit">Add sheep</button>
+  
+}
