@@ -28,10 +28,10 @@
                                     <li><a href="#">One more separated link</a></li>
                                 </ul>
                             </li>
-                            <li><a><form method="get" action="/search" id="search">
-                            	<input name="q" type="text" size="40" placeholder="Search sheep" />
+                            <li><form method="get" action="/search" class="navbar-search pull-left">
+                            	<input name="q" type="text" placeholder="Search sheep" class="search-query" />
                             </form>
-                            </a></li>
+                            </li>
                         </ul>
                         @helper.form(action = routes.Application.logout, 'class -> "navbar-form, pull-right") {
                             <button type="submit" class="btn">Sign out</button>
@@ -51,6 +51,15 @@
 				</div>
 				<div id="main-box" class ="boxes">
 					overview and sheep control panel				
+				</div>
+				<div class="btn-group" data-toggle="buttons-checkbox">
+  					<button type="button" class="btn">Last registered positions</button>
+				</div>
+				<div class="btn-group" data-toggle="buttons-checkbox">
+  					<button type="button" class="btn">Recent alarms</button>
+				</div>
+				<div class="btn-group" data-toggle="buttons-checkbox">
+				 	<button type="button" class="btn">Other recent events</button>
 				</div>
 			</div>
 			<div id="main" class="section">

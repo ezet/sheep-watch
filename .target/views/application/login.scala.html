@@ -1,4 +1,4 @@
-@(form: Form[Application.Login])
+@(form: Form[models.Login])
 
 @head("Login")
 	    
@@ -29,9 +29,7 @@
                                 </ul>
                             </li>
                         </ul>
-                        <!-- <form class="navbar-form pull-right"> -->
-                        
-                        @helper.form(routes.Application.authenticate) {
+                        @helper.form(action = routes.Application.authenticate(), 'class -> "navbar-form pull-right") {
                         	@if(form.hasGlobalErrors) {
                         		<p class="error">
                         			@form.globalError.message
@@ -42,8 +40,8 @@
                         		@flash.get("success")
                         	</p>
                         	}
-                            <input class="span2" name="email"  type="email" placeholder="Email" value="@form("email").value">
-                            <input class="span2" name="password" type="password" placeholder="Password" value="@form("password").value">
+                            <input class="span2" name="username"  type="email" placeholder="Email" value="@form("username").value">
+                            <input class="span2" name="password" type="password" placeholder="Password">
                             <button class="btn" type="submit">Sign in</button>
                         }
                     </div><!--/.nav-collapse -->
