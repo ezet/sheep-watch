@@ -10,6 +10,7 @@ public class Sheep extends Controller {
 	  }
 	  
 	  public static Result add() {
+		  
 		  return TODO;
 	  }
 	  
@@ -22,7 +23,8 @@ public class Sheep extends Controller {
 	  }
 	  
 	  public static Result delete(long id) {
-		  return TODO;
+		  new models.Sheep(id).delete();
+		  return ok();
 	  }
 
 }

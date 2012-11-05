@@ -42,8 +42,8 @@ public class Event extends Model {
 
 	public static Model.Finder<Long, Event> find = new Model.Finder<Long, Event>(Long.class, Event.class);
 
-	public static List<Event> findByProducerId(long id) {
-		return find.where().eq("producerId", id).findList();
+	public static List<Event> findByProducerId(long id, int num) {
+		return find.where().eq("producerId", id).setMaxRows(num).findList();
 	}
 
 	public static List<Event> findByRfid(long id) {

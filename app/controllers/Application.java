@@ -40,6 +40,7 @@ public class Application extends Controller {
 			return badRequest(login.render(loginForm));
 		} else {
 			session("username", loginForm.get().username);
+			session("producerId", String.valueOf(loginForm.get().user.producerId));
 			return redirect(routes.Application.app());
 		}
 	}

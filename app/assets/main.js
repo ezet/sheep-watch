@@ -1,1 +1,6 @@
-jsRoutes.controllers.Admin.add().ajax({})
+function addUser() { }
+function deleteUser() { }
+
+User = Object.extend({
+initialize: function() { }
+});
