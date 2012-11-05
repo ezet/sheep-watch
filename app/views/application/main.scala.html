@@ -1,113 +1,147 @@
-@(title: String)(content: Html)
+@(title: String)(content: Html) @head(title)
 
-@head(title) 
-	    
-	           <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </a>
-                    <a class="brand" href="#">Sheep Watch</a>
-                    <div class="nav-collapse collapse">
-                        <ul class="nav">
-                            <li class="active"><a href="#">Home</a></li>
-                            <li><a href="#about">About</a></li>
-                            <li><a href="#contact">Contact</a></li>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Action</a></li>
-                                    <li><a href="#">Another action</a></li>
-                                    <li><a href="#">Something else here</a></li>
-                                    <li class="divider"></li>
-                                    <li class="nav-header">Nav header</li>
-                                    <li><a href="#">Separated link</a></li>
-                                    <li><a href="#">One more separated link</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#options">Options</a></li>
-                            <li><a href="#help">Help</a></li>
-                            <li><form method="get" action="/search" class="navbar-search pull-left">
-                            	<input name="q" type="text" placeholder="Search sheep" class="search-query" />
-                            </form>
-                            </li>
-                        </ul>
-                        @helper.form(action = routes.Application.logout, 'class -> "navbar-form, pull-right") {
-                            <button type="submit" class="btn">Sign out</button>
-                            }
-                    </div><!--/.nav-collapse -->
-                </div>
-            </div>
-        </div> <!-- /navbar -->
+<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse"
+				data-target=".nav-collapse"> <span class="icon-bar"></span> <span
+				class="icon-bar"></span> <span class="icon-bar"></span>
+			</a> <a class="brand" href="#">Sheep Watch</a>
+			<div class="nav-collapse collapse">
+				<ul class="nav">
+					<li class="active"><a href="#">Home</a></li>
+					<li><a href="#about">About</a></li>
+					<li><a href="#contact">Contact</a></li>
+					<li><a href="#options">Options</a></li>
+					<li><a href="#help">Help</a></li>
+				</ul>
+				@helper.form(action = routes.Application.search("search"), 'class ->
+				"navbar-form pull-left") { <input class="span3 search-query"
+					name="search" type="text" placeholder="Search..." /> }
+				@helper.form(action = routes.Application.logout(), 'class ->
+				"navbar-form pull-right") {
+				<button type="submit" class="btn">Sign out</button>
+				}
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</div>
+</div>
+<!-- /navbar -->
 
-        <div class="container">
-			<div id="left-column" class="section">
-				<div id="left-box" class ="boxes">
-					<a href="#overview">Overview</a>
-				</div>
-				<div id="right-box" class ="boxes">
-					<a href="#sheepcp">Sheep Control panel</a>
-				</div>
-				<div id="main-box" class ="boxes">
-					overview and sheep control panel				
-				</div>
-				<div class="btn-group" data-toggle="buttons-checkbox">
-  					<button type="button" class="btn">Last registered positions</button>
-				</div>
-				<div class="btn-group" data-toggle="buttons-checkbox">
-  					<button type="button" class="btn">Recent alarms</button>
-				</div>
-				<div class="btn-group" data-toggle="buttons-checkbox">
-				 	<button type="button" class="btn">Other recent events</button>
+<div class="container">
+	<div class="row">
+		<div class="span3"></div>
+		<div class="span6">
+			<div class="tabbable">
+				<ul id="tab-nav" class="nav nav-tabs">
+					<li id="map-tab" class="active"><a href="#map-pane"
+						data-toggle="tab">Map</a></li>
+					<li id="sheep-tab"><a href="#sheep-pane" data-toggle="tab">Sheep</a></li>
+					<li id="event-tab"><a href="#event-pane" data-toggle="tab">Events</a></li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="map-pane">
+						<div id="map-canvas"></div>
+					</div>
+					<div class="tab-pane" id="sheep-pane">
+						<table id="sheep-list">
+							<thead>
+								<tr>
+									<th>Sheep Id</th>
+									<th>Name</th>
+									<th>Producer Id</th>
+									<th>Date of birth</th>
+									<th>Weight</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+					<div class="tab-pane" id="event-pane">
+						<table id="event-list">
+
+							<thead>
+								<tr>
+									<th>Event Id</th>
+									<th>Sheep ID</th>
+									<th>Type</th>
+									<th>Date</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
-			<div id="main" class="section">
-				<div id="tabContainer">
-   					 <div class="tabs">
-      					<ul>
-					        <li id="tabHeader_1">Map</li>
-					        <li id="tabHeader_2">Sheep</li>
-					        <li id="tabHeader_3">Events</li>
-     					 </ul>
-   					 </div>
-			    <div class="tabscontent">
-			      <div class="tabpage" id="tabpage_1">
-			        <h2>Page 1</h2>
-			        <p>@content</p>
-			      </div>
-			      <div class="tabpage" id="tabpage_2">
-			        <h2>Page 2</h2>
-			        <p>@content</p>
-			      </div>
-			      <div class="tabpage" id="tabpage_3">
-			        <h2>Page 3</h2>
-			        <p>@content</p>
-			      </div>
-			    </div>
-			  </div>
+		</div>
+		<div class="span3">
+			<div class="accordion" id="accordion2">
+				<div class="accordion-group">
+					<div class="accordion-heading">
+						<a class="collapsable-toggle accordion-toggle"
+							data-toggle="collapse" data-target="#recent-alarms"> Recent
+							alarms (Owned)</a>
+					</div>
+					<div id="recent-alarms" class="collapsable-body collapse in">
+						<div class="accordion-inner">Recent alarms content</div>
+					</div>
+				</div>
+				<div class="accordion-group">
+					<div class="accordion-heading">
+						<a class="accordion-toggle" data-toggle="collapse"
+							data-target="#recent-exceptions">Recent exceptions</a>
+					</div>
+					<div id="recent-exceptions" class="collapsable-body collapse in">
+						<div class="accordion-inner">Recent alarms content</div>
+					</div>
+				</div>
+				<div class="accordion-group">
+					<div class="accordion-heading">
+						<a class="accordion-toggle" data-toggle="collapse"
+							data-target="#recent-alarms2">Recent alarms (Nearby)</a>
+					</div>
+					<div id="recent-alarms2" class="collapsable-body collapse in">
+						<div class="accordion-inner">Recent alarms content</div>
+					</div>
+				</div>
+				<div class="accordion-group">
+					<div class="accordion-heading">
+						<a class="accordion-toggle" data-toggle="collapse"
+							data-target="#map-settings">Map settings</a>
+					</div>
+					<div id="map-settings" class="collapsable-body collapse in">
+						<div class="accordion-inner">
+							<div id="map-settings">
+							<label class="checkbox">
+								<input type="checkbox" name="group" value="1"/> Show attacks on your animals</label>
+							</label>
+								<label class="checkbox">
+								<input type="checkbox" name="group" value="2"/> Show exceptions 
+								</label>
+								<label class="checkbox">
+								<input type="checkbox" name="group" value="3"/> Show other attacks
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
 			</div>
-			<div id="right-column" class="section">
-				<p>Recent local alarms</p>
-				<div class="right-column-boxes">
-				</div>
-				<p>Recent events</p>
-				<div class="right-column-boxes">
-				</div>
-				<p>Recent nearby alarms</p>
-				<div class="right-column-boxes">
-				</div>
-			</div>
+		</div>
+	</div>
 
-            <hr>
+	<hr>
 
-            <footer> 
-            	<div id="footer">
-                <p>&copy; Sheep Watch 2012</p>
-                </div>
-            </footer>
+	<footer>
+		<div id="footer">
+			<p>&copy; Sheep Watch 2012</p>
+		</div>
+	</footer>
 
-        </div> <!-- /container -->		
+</div>
+<!-- /container -->
 @footer()
