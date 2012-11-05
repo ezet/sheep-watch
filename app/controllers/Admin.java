@@ -65,11 +65,15 @@ public class Admin extends Controller {
 	}
 	
 	public static Result update(long id) {
+		
 		return TODO;
 	}
 	
 	public static Result delete(long id) {
-		return TODO;
+		User user = new User();
+		user.id = id;
+		user.delete();
+		return ok();
 	}
 	
 	public static Result javascriptRoutes() {
