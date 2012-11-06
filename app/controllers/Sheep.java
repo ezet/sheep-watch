@@ -2,8 +2,6 @@ package controllers;
 
 import java.util.List;
 
-import org.codehaus.jackson.JsonNode;
-
 import play.Logger;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -15,11 +13,10 @@ public class Sheep extends Controller {
 		  List<models.Sheep> list = models.Sheep.findByProducerId(Long.valueOf(session("producerId")));
 		  
 		  for (models.Sheep sheep : list) {
-			  for (models.Event event: sheep.events) {
-				  Logger.debug(String.valueOf(event.id));
-			  }
+			  sheep.producer = null;
+			  sheep.events = null;
 		  }
-		  return ok(list.get(0).name);
+		  return ok(Json.toJson(list));
 	  }
 	  
 	  public static Result add() {

@@ -21,6 +21,7 @@ public class Sheep extends Model {
 	@Id
 	public long id;
 	public long sheepId;
+	public long producerId;
 	
 	@ManyToOne
 	@JoinColumn(name="producer_id")
