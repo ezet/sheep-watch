@@ -62,8 +62,6 @@ function initSheepList() {
 		}, {
 			"mData" : "sheepId"
 		}, {
-			"mData" : "producerId"
-		}, {
 			"mData" : "rfid"
 		}, {
 			"mData" : "name"

@@ -1,6 +1,4 @@
-@(title: String)(content: Html)
-
-@head(title)
+@(title: String)(content: Html) @head(title)
 
 <div class="navbar navbar-inverse navbar-fixed-top">
 	<div class="navbar-inner">
@@ -34,26 +32,27 @@
 <div class="container-fluid">
 	<div class="row-fluid">
 		<div class="span3"></div>
-		<div class="span6">
+		<div class="span6 container">
 			<div class="tabbable">
-				<ul id="tab-nav" class="nav nav-tabs">
-					<li id="map-tab" class="active"><a href="#map-pane"
-						data-toggle="tab">Map</a></li>
-					<li id="sheep-tab"><a href="#sheep-pane" data-toggle="tab">Sheep</a></li>
-					<li id="event-tab"><a href="#event-pane" data-toggle="tab">Events</a></li>
-				</ul>
+					<ul id="tab-nav" class="nav nav-tabs">
+						<li id="map-tab" class="active"><a href="#map-pane"
+							data-toggle="tab">Map</a></li>
+						<li id="sheep-tab"><a href="#sheep-pane" data-toggle="tab">Sheep</a></li>
+						<li id="event-tab"><a href="#event-pane" data-toggle="tab">Events</a></li>
+						<li class="pull-right"><button class="btn btn-primary">Add new sheep</button></li>
+					</ul>
 				<div class="tab-content">
 					<div class="tab-pane active" id="map-pane">
 						<div id="map-canvas"></div>
 					</div>
 					<div class="tab-pane" id="sheep-pane">
-						<table id="sheep-list" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+						<table id="sheep-list" cellpadding="0" cellspacing="0" border="0"
+							class="table table-striped table-bordered">
 
 							<thead>
 								<tr>
 									<th>InternalId</th>
 									<th>SheepId</th>
-									<th>ProducerId</th>
 									<th>rfid</th>
 									<th>Name</th>
 									<th>Weight</th>
@@ -65,7 +64,8 @@
 						</table>
 					</div>
 					<div class="tab-pane" id="event-pane">
-						<table id="event-list" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+						<table id="event-list" cellpadding="0" cellspacing="0" border="0"
+							class="table table-striped table-bordered">
 
 
 							<thead>
@@ -121,14 +121,12 @@
 					<div id="map-settings" class="collapsable-body collapse in">
 						<div class="accordion-inner">
 							<div id="map-settings">
-							<label class="checkbox">
-								<input type="checkbox" name="group" value="1"/> Show attacks on your animals</label>
-							</label>
-								<label class="checkbox">
-								<input type="checkbox" name="group" value="2"/> Show exceptions 
-								</label>
-								<label class="checkbox">
-								<input type="checkbox" name="group" value="3"/> Show other attacks
+								<label class="checkbox"> <input type="checkbox"
+									name="group" value="1" /> Show attacks on your animals
+								</label> </label> <label class="checkbox"> <input type="checkbox"
+									name="group" value="2" /> Show exceptions
+								</label> <label class="checkbox"> <input type="checkbox"
+									name="group" value="3" /> Show other attacks
 								</label>
 							</div>
 						</div>
@@ -150,8 +148,9 @@
 
 </div>
 <!-- /container -->
-        </div> <!-- /container -->	
-        <!-- <script type="text/javascript">
+</div>
+<!-- /container -->
+<!-- <script type="text/javascript">
         	window.onload=function() {
 
         	  // get tab container
