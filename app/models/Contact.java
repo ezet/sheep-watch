@@ -2,6 +2,9 @@ package models;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import play.db.ebean.Model;
@@ -12,7 +15,9 @@ public class Contact extends Model {
 	
 	@Id
 	public long id;
-	public long producerId;
+	@ManyToOne
+	@JoinColumn(name="contacts")
+	public Producer producer;
 	public String name;
 	public String email;
 	public String phoneSMS;

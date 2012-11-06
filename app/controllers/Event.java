@@ -4,32 +4,39 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 
-import models.Event;
-
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.application.eventList;
 
-public class Events extends Controller {
+import com.avaje.ebean.Ebean;
+
+public class Event extends Controller {
+	
 	public static Result show(long id) {
 		return TODO;
 	}
 
 	public static Result index() {
-		return TODO;
+		List<models.Event> events = models.Event.findByProducerId(1, 10);
+		models.Event.find.fetch("sheep.producer");
+		for (models.Event event : events) {
+			event.sheep.producer = null;
+			event.sheep.events = null;
+		}
+		return ok(Json.toJson(events));
 	}
-	
+
 	public static Result alarms() {
 		return TODO;
 	}
-	
+
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result recentAlarms(int num) {
-		List<Event> events = Event.findByProducerId(Long.valueOf(session("producerId")), num);
+		List<models.Event> events = models.Event.findByProducerId(Long.valueOf(session("producerId")), num);
 		ObjectMapper mapper = new ObjectMapper();
 		StringWriter writer = new StringWriter();
 		try {
@@ -40,7 +47,7 @@ public class Events extends Controller {
 		}
 		return ok(Json.toJson(events));
 	}
-	
+
 	public static Result recentExceptions(Long num) {
 		return TODO;
 	}

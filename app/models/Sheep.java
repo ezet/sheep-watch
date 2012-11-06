@@ -1,12 +1,17 @@
 package models;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 @Entity
@@ -15,31 +20,32 @@ public class Sheep extends Model {
 
 	@Id
 	public long id;
-	public long producerId;
 	public long sheepId;
-	@Required
+	
+	@ManyToOne
+	@JoinColumn(name="producer_id")
+	public Producer producer;
+	
 	public long rfid;
+	
+	@OneToMany(mappedBy="sheep")
+	public List<Event> events = new ArrayList<>();
 
 	public String name;
-	public long timeOfBirth;
 	public double birthWeight;
+	public Date timeOfBirth;
 	public String notes;
 	public boolean attacked;
-	public long timeAdded;
+	public Timestamp timeAdded;
 
 	public static Model.Finder<Long, Sheep> find = new Model.Finder<Long, Sheep>(Long.class, Sheep.class);
-	public static Model.Finder<String, Sheep> findByName = new Model.Finder<String, Sheep>(String.class, Sheep.class);
 
 	public static Sheep create(long id, long rfid, long producerId) {
 		return new Sheep();
 	}
-
-	public static List<Sheep> findAll() {
-		return find.all();
-	}
-
-	public static List<Sheep> findByName(String name) {
-		return findByName.where().eq("name", name).findList();
+	
+	public static List<Sheep> findByProducerId(long id) {
+		return find.where().eq("producer_id", id).findList();
 	}
 
 	public Sheep() {
