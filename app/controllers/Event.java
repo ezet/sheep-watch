@@ -35,7 +35,7 @@ public class Event extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result recentAlarms(int num) {
+	public static Result recentAlarms(Integer num) {
 		List<models.Event> events = models.Event.findByProducerId(Long.valueOf(session("producerId")), num);
 		ObjectMapper mapper = new ObjectMapper();
 		StringWriter writer = new StringWriter();

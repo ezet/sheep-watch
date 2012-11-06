@@ -24,16 +24,21 @@ public class Sheep extends Controller {
 		  return TODO;
 	  }
 	  
-	  public static Result show(long id) {
+	  public static Result show(Long id) {
+		  Logger.debug(String.valueOf(id));
+		  models.Sheep sheep = models.Sheep.find.byId(id);
+		  sheep.producer = null;
+		  sheep.events = null;
+		  Logger.debug(sheep.toString());
+		  return ok(Json.toJson(sheep));
+	  }
+	  
+	  public static Result update(Long id) {
 		  return TODO;
 	  }
 	  
-	  public static Result update(long id) {
-		  return TODO;
-	  }
-	  
-	  public static Result delete(long id) {
-		  new models.Sheep(id).delete();
+	  public static Result delete(Long id) {
+		  models.Sheep.find.ref(id).delete();
 		  return ok();
 	  }
 

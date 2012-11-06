@@ -56,5 +56,9 @@ public class Sheep extends Model {
 	public Sheep(long id) {
 		this.id = id;
 	}
+	
+	public String toString() {
+		return "id:" + id + " sheepId:" + sheepId + " producerId:" + producerId + " rfid:" + rfid;
+	}
 
 }
