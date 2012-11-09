@@ -93,6 +93,10 @@ table {
     clear: both;
 }
 
+table tr.row-selected td, table tr.row-selected th {
+	background-color: #DDD !important;
+}
+
 table.table thead .sorting,
 table.table thead .sorting_asc,
 table.table thead .sorting_desc,

@@ -29,8 +29,8 @@ public class Sheep extends Controller {
 	  }
 	  
 	  public static Result add() {
+		  return ok("ok");
 		  
-		  return TODO;
 	  }
 	  
 	  public static Result show(Long id) {

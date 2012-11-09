@@ -29,25 +29,84 @@
 </div>
 <!-- /navbar -->
 
+<!--  Modals -->
+
+<div id="add-sheep-modal" class="modal hide fade" tabindex="-1"
+	role="dialog" aria-laballedby="add-sheep-label" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">x</button>
+		<h3 id="add-sheep-labal">Add new sheep</h3>
+	</div>
+	<div class="modal-body">
+		@helper.form(action = routes.Sheep.add(), 'class -> "form-horizontal",
+		'id -> "add-sheep-form") {
+		<div class="control-group">
+			<label class="control-label" for="sheep-id">Sheep ID</label>
+			<div class="controls">
+				<input name="sheep-id" type="number" placeholder="Sheep ID" required autofocus>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="rfid">RFID</label>
+			<div class="controls">
+				<input name="rfid" type="number" placeholder="RFID" required>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="sheep-name">Sheep name</label>
+			<div class="controls">
+				<input name="sheep-name" type="text" placeholder="Sheep name">
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="sheep-birth">Birth</label>
+			<div class="controls">
+				<input name="sheep-birth" type="date" placeholder="Sheep name">
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="sheep-weight">Weight</label>
+			<div class="controls">
+				<input name="sheep-weight" type="number" placeholder="Weight">
+			</div>
+		</div>
+		}
+	</div>
+	<div class="modal-footer">
+		<input type="button" class="btn" data-dismiss="modal"
+			aria-hidden="true" form="add-sheep-form" value="Cancel"> <input
+			type="submit" class="btn btn-primary" form="add-sheep-form"
+			value="Save">
+	</div>
+</div>
+
 <div class="container-fluid">
 	<div class="row-fluid">
-		<div class="span3"></div>
+		<div class="span3">
+			<div class="collapsible">
+				<div id="add-sheep" class="collapse">test</div>
+
+			</div>
+		</div>
 		<div class="span6 container">
 			<div class="tabbable">
-					<ul id="tab-nav" class="nav nav-tabs">
-						<li id="map-tab" class="active"><a href="#map-pane"
-							data-toggle="tab">Map</a></li>
-						<li id="sheep-tab"><a href="#sheep-pane" data-toggle="tab">Sheep</a></li>
-						<li id="event-tab"><a href="#event-pane" data-toggle="tab">Events</a></li>
-						<li class="pull-right"><button class="btn btn-primary">Add new sheep</button></li>
-					</ul>
+				<ul id="tab-nav" class="nav nav-tabs">
+					<li id="map-tab" class="active"><a href="#map-pane"
+						data-toggle="tab">Map</a></li>
+					<li id="sheep-tab"><a href="#sheep-pane" data-toggle="tab">Sheep</a></li>
+					<li id="event-tab"><a href="#event-pane" data-toggle="tab">Events</a></li>
+					<li class="pull-right"><button class="btn btn-primary"
+							data-toggle="modal" data-target="#add-sheep-modal">Add
+							new sheep</button></li>
+				</ul>
 				<div class="tab-content">
 					<div class="tab-pane active" id="map-pane">
 						<div id="map-canvas"></div>
 					</div>
 					<div class="tab-pane" id="sheep-pane">
 						<table id="sheep-list" cellpadding="0" cellspacing="0" border="0"
-							class="table table-striped table-bordered">
+							class="table table-striped table-bordered table-hover">
 
 							<thead>
 								<tr>
@@ -146,8 +205,6 @@
 		</div>
 	</footer>
 
-</div>
-<!-- /container -->
 </div>
 <!-- /container -->
 <!-- <script type="text/javascript">
