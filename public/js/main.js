@@ -80,7 +80,7 @@ function initSheepList() {
 		}, {
 			"mData" : "birthWeight"
 		}, {
-			"mData" : "timeOfBirth"
+			"mData" : "dateOfBirth"
 		} ]
 	});
 

@@ -4,8 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import play.db.ebean.Model;
 
@@ -15,9 +15,12 @@ public class Contact extends Model {
 	
 	@Id
 	public long id;
+
+	@Transient
+	public long producerId;
 	@ManyToOne
-	@JoinColumn(name="contacts")
-	public Producer producer;
+	@JoinColumn(name="producer_id")
+	public User producer;
 	public String name;
 	public String email;
 	public String phoneSMS;

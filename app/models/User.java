@@ -9,14 +9,16 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.annotate.JsonManagedReference;
+
 import play.data.format.Formats;
 import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 @Entity
-@Table(name = "Producer")
-public class Producer extends Model {
+@Table(name = "User")
+public class User extends Model {
 
 	@Id
 	public long id;
@@ -36,35 +38,36 @@ public class Producer extends Model {
 
 	public Timestamp timeCreated;
 	public int accessLevel;
-	@OneToMany(mappedBy="producer")
-	public List<Contact> contacts;
 	
 	@OneToMany(mappedBy="producer")
-	List<Sheep> sheep = new ArrayList<>();
+	public List<Contact> contacts = new ArrayList<>();
+	
+	@OneToMany(mappedBy="producer")
+	public List<Sheep> sheep = new ArrayList<>();
 
-	public static Model.Finder<Long, Producer> find = new Model.Finder<>(Long.class, Producer.class);
+	public static Model.Finder<Long, User> find = new Model.Finder<>(Long.class, User.class);
 
-	public static Producer create() {
-		return new Producer();
+	public static User create() {
+		return new User();
 	}
 
-	public static List<Producer> findAll() {
+	public static List<User> findAll() {
 		return find.all();
 	}
 
-	public static Producer findByUsername(String username) {
+	public static User findByUsername(String username) {
 		return find.where().eq("username", username).findUnique();
 	}
 
-	public static Producer authenticate(String username, String password) {
+	public static User authenticate(String username, String password) {
 		return find.where().eq("username", username).eq("password", password).findUnique();
 	}
 
-	public Producer() {
+	public User() {
 
 	}
 
-	public Producer(long id) {
+	public User(long id) {
 		this.id = id;
 	}
 

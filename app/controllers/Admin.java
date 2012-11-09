@@ -1,7 +1,7 @@
 package controllers;
 
 import models.Login;
-import models.Producer;
+import models.User;
 
 import org.codehaus.jackson.JsonNode;
 
@@ -23,7 +23,7 @@ public class Admin extends Controller {
 	}
 	
 	public static Result cp() {
-		return ok(cp.render(form(Producer.class), Producer.findAll()));
+		return ok(cp.render(form(User.class), User.findAll()));
 	}
 
 	public static Result login() {
@@ -50,7 +50,7 @@ public class Admin extends Controller {
 	}
 	
 	public static Result list() {
-		return ok(userlist.render(Producer.findAll())); 
+		return ok(userlist.render(User.findAll())); 
 	}
 	
 	public static Result show(long id) {
@@ -59,7 +59,7 @@ public class Admin extends Controller {
 	
 	public static Result add() {
 		JsonNode json = request().body().asJson();
-		Producer user = form(Producer.class).bindFromRequest().get();
+		User user = form(User.class).bindFromRequest().get();
 		user.save();
 		return redirect(routes.Admin.cp());
 	}
@@ -70,7 +70,7 @@ public class Admin extends Controller {
 	}
 	
 	public static Result delete(long id) {
-		Producer user = new Producer();
+		User user = new User();
 		user.id = id;
 		user.delete();
 		return ok();
