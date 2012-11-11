@@ -1,5 +1,6 @@
 var locations = [ [ 'Sau 01', 62.2, 9 ], [ 'Sau 02', 62, 9.1 ],
 		[ 'Sau 03', 62.3, 8.9 ], [ 'Sau 04', 62, 9 ] ];
+
 var statKartOptions = {
 	getTileUrl : function(coord, zoom) {
 		return "http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom="
@@ -49,7 +50,15 @@ function initMap() {
 	map.fitBounds(bounds);
 };
 
-var sheepList;
+$.extend($.fn.dataTableExt.oStdClasses, {
+	"sSortAsc" : "header headerSortDown",
+	"sSortDesc" : "header headerSortUp",
+	"sSortable" : "header"
+});
+
+$.extend($.fn.dataTableExt.oStdClasses, {
+	"sWrapper" : "dataTables_wrapper form-inline"
+});
 
 function initSheepList() {
 
@@ -62,7 +71,7 @@ function initSheepList() {
 		}
 	});
 
-	sheepTable = $("#sheep-list").dataTable({
+	var sheepTable = $("#sheep-list").dataTable({
 		"bProcessing" : true,
 		"sAjaxDataProp" : "data",
 		"sPaginationType" : "bootstrap",
@@ -84,29 +93,41 @@ function initSheepList() {
 		} ]
 	});
 
-	$.extend($.fn.dataTableExt.oStdClasses, {
-		"sSortAsc" : "header headerSortDown",
-		"sSortDesc" : "header headerSortUp",
-		"sSortable" : "header"
-	});
-
-	$.extend($.fn.dataTableExt.oStdClasses, {
-		"sWrapper" : "dataTables_wrapper form-inline"
-	});
 };
 
 function initEventList() {
-	$("#event-list").dataTable();
+	var eventTable = $("#event-list").dataTable({
+		"bProcessing" : true,
+		"sAjaxDataProp" : "data",
+		"sPaginationType" : "bootstrap",
+		"sAjaxSource" : jsRoutes.controllers.Event.index().absoluteURL(),
+		// "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+		"aoColumns" : [ {
+			"mData" : "id",
+			"bVisible" : false,
+		}, {
+			"mData" : "sheepId"
+		}, {
+			"mData" : "messageType"
+		}, {
+			"mData" : "timeSent"
+		}, {
+			"mData" : "pulse"
+		}, {
+			"mData" : "temperature"
+		} ]
+	});
 };
+
 function showRequest(formData, jqForm, options) {
 	console.log("Request: " + $.param(formData));
 	return true;
-};
+}
 
 function showResponse(responseText, statusText, xhr, $form) {
 	console.log("Response: status: " + statusText + "\nResponseText:\n"
 			+ responseText);
-};
+}
 
 function initButtons() {
 	var addSheepOptions = {
@@ -114,14 +135,55 @@ function initButtons() {
 		success : showResponse,
 	};
 	$('#add-sheep-form').ajaxForm(addSheepOptions);
-};
+}
 
+
+function init() {
+	$('#recent-alarms').on('click', 'a', function(e) {
+		e.preventDefault();
+		var id = $(this).attr("data-event-id");
+		jsRoutes.controllers.Event.show(id).ajax({
+			dataType : 'json',
+			success: function(data) {
+				var events = $('#event-details ul');
+				events.find('#event-type').text(data.messageType);
+				events.find('#event-id').text(data.sheepId);
+				events.find('#event-rfid').text(data.rfid);
+				events.find('#event-time').text(data.timeSent);
+				events.find('#event-temp').text(data.temperature);
+				events.find('#event-pulse').text(data.pulse);
+				events.find('#event-lat').text(data.latitude);
+				events.find('#event-long').text(data.longitude);
+			}
+		})
+	});
+}
+
+var recentAlarmsInterval = window.setInterval('recentAlarmsCall()', 30000);
+var recentAlarmsCall = function() {
+	jsRoutes.controllers.Event.eventsByType(5).ajax(
+			{
+				dataType : 'json',
+				success : function(data) {
+					var html = "<ul>";
+					$.each(data, function(k, v) {
+						html = html + '<li><a href="#" data-event-id=' + v.id
+								+ '>ID ' + v.sheepId + ' (' + v.timeSent
+								+ ')</a></li>';
+					});
+					var recentAlarms = $('#recent-alarms .accordion-inner')
+							.html(html);
+				}
+			});
+}
 
 $(document).ready(function() {
 	initButtons();
 	initMap();
 	initSheepList();
 	initEventList();
+	recentAlarmsCall();
+	init();
 });
 
 /* API method to get paging information */

@@ -77,8 +77,11 @@ public class Application extends Controller {
 
 				// Routes for Sheep
 				controllers.routes.javascript.Sheep.index(),
-				controllers.routes.javascript.Sheep.add(),
-				controllers.routes.javascript.Sheep.delete()
+				controllers.routes.javascript.Sheep.delete(),
+				
+				controllers.routes.javascript.Event.index(),
+				controllers.routes.javascript.Event.eventsByType(),
+				controllers.routes.javascript.Event.show()
 				
 		));
 	}

@@ -4,14 +4,19 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import play.data.format.Formats;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
+
+import com.avaje.ebean.RawSql;
+import com.avaje.ebean.RawSqlBuilder;
 
 @Entity
 @Table(name = "Event")
@@ -22,12 +27,18 @@ public class Event extends Model {
 	};
 
 	@Id
+	@GeneratedValue
 	public long id;
 	
+	@Transient
+	public long sheepId;
+	
+	@Transient
 	public long rfid;
 	
 	@ManyToOne
 	@JoinColumn(name="rfid")
+	@Required
 	public Sheep sheep;
 
 	public MessageType messageType;
@@ -37,15 +48,33 @@ public class Event extends Model {
 	
 	@Formats.DateTime(pattern="yyyy-MM-dd hh:mm:ss")
 	public Date timeReceived;
+	
 	public double latitude;
 	public double longitude;
+	
 	public int pulse;
 	public double temperature;
 
 	public static Model.Finder<Long, Event> find = new Model.Finder<Long, Event>(Long.class, Event.class);
 
 	public static List<Event> findByProducerId(long id, int num) {
-		return find.where().eq("sheep.producer.producerId", id).findList();
+		return find.where().eq("sheep.producer.producerId", id).orderBy("timeSent").setMaxRows(num).findList();
+	}
+	
+	public static List<Event> findTypeByProducerId(long producerId, String type, int num) {
+		return find.where().eq("sheep.producer.producerId", producerId).eq("messageType", MessageType.valueOf(type)).orderBy("timeSent").setMaxRows(num).findList();
+	}
+	
+	public static List<Event> findLatestEvents(long producerId) {
+		return find.where().eq("sheep.producer.producerId", producerId).orderBy("timeSent").findList();
+	}
+	
+	public static Event findLatestEvent(long sheepId) {
+		return find.where().eq("sheep.sheepId", sheepId).orderBy("timeSent").setMaxRows(1).findUnique();
+	}
+	
+	public static List<Event> byBySheepId(long id) {
+		return find.where().eq("sheep.sheepId", id).findList();
 	}
 
 	public static List<Event> findByRfid(long id) {

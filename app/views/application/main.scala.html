@@ -35,7 +35,7 @@
 	role="dialog" aria-laballedby="add-sheep-label" aria-hidden="true">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal"
-			aria-hidden="true">x</button>
+			aria-hidden="true">&times</button>
 		<h3 id="add-sheep-labal">Add new sheep</h3>
 	</div>
 	<div class="modal-body">
@@ -83,9 +83,21 @@
 
 <div class="container-fluid">
 	<div class="row-fluid">
-		<div class="span3">
+		<div class="span3 container">
 			<div class="collapsible">
-				<div id="add-sheep" class="collapse">test</div>
+				<div id="event-details" class="collapse in">
+				<h2>Event details</h2>
+					<ul>
+					<li>Type: <span id="event-type"></span></li>
+					<li>RFID: <span id="event-rfid"></span></li>
+					<li>Sheep ID: <span id="event-id"></span></li>
+					<li>Sent: <span id="event-time"></span></li>
+					<li>Temperature: <span id="event-temp"></span></li>
+					<li>Pulse: <span id="event-pulse"></span></li>
+					<li>Latitude: <span id="event-lat"></span></li>
+					<li>Longitude: <span id="event-long"></span></li>
+					</ul>
+				</div>
 
 			</div>
 		</div>
@@ -129,10 +141,12 @@
 
 							<thead>
 								<tr>
-									<th>Event Id</th>
+									<th>Event ID</th>
 									<th>Sheep ID</th>
 									<th>Type</th>
-									<th>Date</th>
+									<th>Sent</th>
+									<th>Pulse</th>
+									<th>Temperature</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -151,7 +165,7 @@
 							alarms (Owned)</a>
 					</div>
 					<div id="recent-alarms" class="collapsable-body collapse in">
-						<div class="accordion-inner">Recent alarms content</div>
+						<div class="accordion-inner">loading...</div>
 					</div>
 				</div>
 				<div class="accordion-group">
@@ -160,7 +174,7 @@
 							data-target="#recent-exceptions">Recent exceptions</a>
 					</div>
 					<div id="recent-exceptions" class="collapsable-body collapse in">
-						<div class="accordion-inner">Recent alarms content</div>
+						<div class="accordion-inner">loading...</div>
 					</div>
 				</div>
 				<div class="accordion-group">

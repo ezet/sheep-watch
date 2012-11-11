@@ -34,6 +34,18 @@ public class Sheep extends Controller {
 
 		return ok(node);
 	}
+	
+	public static Result positions() {
+		
+		return TODO;
+	}
+	
+	public static Result position(Long id) {
+		models.Event event = models.Event.findLatestEvent(id);
+		event.sheepId = event.sheep.sheepId;
+		event.sheep = null;
+		return ok(Json.toJson(event));
+	}
 
 	public static Result add() {
 		Form<models.Sheep> sheepForm = form(models.Sheep.class);
@@ -47,6 +59,9 @@ public class Sheep extends Controller {
 		sheep.producer = User.find.ref(Long.valueOf(session("producerId")));
 		sheep.save();
 		sheep.refresh();
+		sheep.producerId = sheep.producer.producerId;
+		sheep.producer = null;
+		sheep.events = null;
 		StringWriter writer = new StringWriter();
 		try {
 			new ObjectMapper().writeValue(writer, sheep);

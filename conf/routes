@@ -16,6 +16,7 @@ GET		/logout 					controllers.Application.logout()
 # Sheep
 GET 	/sheep  					controllers.Sheep.index()
 GET 	/sheep/:id					controllers.Sheep.show(id: Long)
+GET		/sheep/:id/position			controllers.Sheep.position(id: Long)
 POST	/sheep 						controllers.Sheep.add()
 PUT		/sheep/:id					controllers.Sheep.update(id: Long)
 DELETE	/sheep/:id					controllers.Sheep.delete(id: Long)
@@ -23,9 +24,9 @@ DELETE	/sheep/:id					controllers.Sheep.delete(id: Long)
 # Events
 GET		/events						controllers.Event.index()
 GET		/events/:id					controllers.Event.show(id: Long)
-GET		/events/alarms				controllers.Event.alarms()
-GET		/events/alarms/recent/:num	controllers.Event.recentAlarms(num: Int)
-GET		/events/exceptions/recent/:num	controllers.Event.recentExceptions(num: Int)
+GET		/alarms 					controllers.Event.eventsByType(typ = "ALARM", num: Integer ?= 0)
+GET		/alarms/:num				controllers.Event.eventsByType(typ = "ALARM", num: Integer)
+GET		/events/exceptions/recent/:num	controllers.Event.recentExceptions(num: Integer)
 
 # Map
 GET		/map/sheep/:id				controllers.Map.sheep(id: Long)
