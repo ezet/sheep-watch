@@ -79,13 +79,15 @@ public class Application extends Controller {
 				controllers.routes.javascript.Sheep.list(),
 				controllers.routes.javascript.Sheep.delete(),
 				controllers.routes.javascript.Sheep.show(),
-				
+
+				// Events
 				controllers.routes.javascript.Event.list(),
 				controllers.routes.javascript.Event.listBySheep(),
 				controllers.routes.javascript.Event.alarmList(),
 				controllers.routes.javascript.Event.updateList(),
 				controllers.routes.javascript.Event.show(),
 				
+				// Misc
 				controllers.routes.javascript.Assets.at()
 				
 		));

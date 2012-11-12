@@ -2,7 +2,7 @@
 
 <div id="sheep-page">
 	<div class="row">
-		<div class="span4">
+		<div class="span3">
 			<div id="sheep-details" class="collapse in">
 				<h2>Sheep details</h2>
 				<ul>
@@ -14,20 +14,19 @@
 					<li>Attacked: <span id="sheep-attacked"></span></li>
 					<li>Notes: <span id="sheep-notes"></span></li>
 				</ul>
+				<br>
+				<button id="edit-sheep" class="disabled btn btn-small"><i class="icon-edit"></i>  Edit</button>
+				<button id="delete-sheep" class="disabled btn btn-danger btn-small"><i class="icon-remove"></i> Delete</button>
 			</div>
 		</div>
-		<div class="span8">
-			<div id="sheep-map" class="span11">Map</div>
+		<div class="span9">
+			<div id="sheep-map" class="span11">loading...</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="span12">
-			<div class="alert alert-info">
-				<button type="button" class="close" data-dismiss="alert">×</button>
-				<strong>Info!</strong> <span class="alert-msg">Could not find
-					any events registered on this animal.</span>
-			</div>
-		</div>
+	<div class="alert alert-info">
+		<button type="button" class="close" data-dismiss="alert">×</button>
+		<strong>Information:</strong> <span class="alert-msg">We could not find
+			any events registered on this animal.</span>
 	</div>
 	<div class="row">
 		<div class="span12">

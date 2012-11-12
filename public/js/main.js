@@ -6,6 +6,9 @@ $(document).ready(function() {
 	initEventList();
 	recentAlarmsCall();
 	sheepMap.init();
+	console.log(eventMap);
+	console.log("test");
+	eventMap.init();
 });
 
 var locations = [ [ 'Sau 01', 62.2, 9 ], [ 'Sau 02', 62, 9.1 ],
@@ -15,8 +18,9 @@ var map = new gmap("map-canvas");
 
 var sheepMap = new gmap("sheep-map");
 
-function gmap(selector) {
+var eventMap = new gmap("event-map");
 
+function gmap(selector) {
 	this.selector = selector
 	this.statKartOptions = {
 		getTileUrl : function(coord, zoom) {
@@ -37,6 +41,7 @@ function gmap(selector) {
 
 	this.init = function() {
 		var div = $('#' + this.selector);
+		console.log(div);
 		if (!div.length) {
 			return false;
 		}
@@ -101,7 +106,7 @@ function gmap(selector) {
 			position : pos,
 			map : this.map
 		});
-		
+
 		google.maps.event.addListener(marker, 'hover', function() {
 		});
 		var icon = jsRoutes.controllers.Assets.at("img/alert.png");
@@ -125,11 +130,13 @@ function showAllAlarms() {
 	jsRoutes.controllers.Event.alarmList(5).ajax({
 		dataType : 'json',
 		success : function(data) {
-			map.clearMarkers();
-			$.each(data, function(k, v) {
-				map.addMarker(v.latitude, v.longitude, "ALARM", v.id)
-			});
-			map.fitBounds();
+			if (data.length) {
+				map.clearMarkers();
+				$.each(data, function(k, v) {
+					map.addMarker(v.latitude, v.longitude, "ALARM", v.id)
+				});
+				map.fitBounds();
+			}
 		}
 	});
 }
@@ -189,7 +196,7 @@ function initSheepList() {
 						}
 					});
 
-	sheepTable = $("#sheep-list").dataTable({
+	var sheepTable = $("#sheep-list").dataTable({
 		"bProcessing" : true,
 		"sAjaxDataProp" : "data",
 		"sPaginationType" : "bootstrap",
@@ -214,6 +221,33 @@ function initSheepList() {
 };
 
 function initEventList() {
+	$("#event-list tbody")
+			.on(
+					'click',
+					'tr',
+					function(e) {
+						if ($(this).hasClass('row-selected')) {
+							$(this).removeClass('row-selected');
+						} else {
+							eventTable.$('tr.row-selected').removeClass(
+									'row-selected');
+							$(this).addClass('row-selected');
+							var id = eventTable.fnGetData(this, 0)
+							showSheep(id);
+							jsRoutes.controllers.Event.show(id).ajax(
+									{
+										dataType : 'json',
+										success : function(data) {
+											showEventDetails(data);
+											eventMap.addMarker(data.latitude,
+													data.longitude,
+													data.messageType,
+													data.id, true);
+										}
+									});
+						}
+					});
+
 	var eventTable = $("#event-list").dataTable({
 		"bProcessing" : true,
 		"sAjaxDataProp" : "data",
@@ -265,12 +299,27 @@ function showSheep(id) {
 function showSheepDetails(data) {
 	var sheep = $('#sheep-details');
 	sheep.find('#sheep-id').text(data.sheepId);
+	sheep.find('#delete-sheep').attr("data-sheep-id", data.id);
+	sheep.find('#edit-sheep').attr("data-sheep-id", data.id);
 	sheep.find('#sheep-rfid').text(data.rfid);
 	sheep.find('#sheep-name').text(data.name);
 	sheep.find('#sheep-weight').text(data.birthWeight);
 	sheep.find('#sheep-birth').text(data.dateOfBirth);
 	sheep.find('#sheep-notes').text(data.notes);
 	sheep.find('#sheep-attacked').text(data.attacked);
+	sheep.find('.disabled').removeClass('disabled');
+}
+
+function clearSheepDetails() {
+	var sheep = $('#sheep-details');
+	sheep.find('#sheep-id').empty();
+	sheep.find('#sheep-rfid').empty();
+	sheep.find('#sheep-name').empty();
+	sheep.find('#sheep-weight').empty();
+	sheep.find('#sheep-birth').empty();
+	sheep.find('#sheep-notes').empty();
+	sheep.find('#sheep-attacked').empty();
+	sheep.find('.btn').addClass('disabled');
 }
 
 function showEvent(id) {
@@ -291,8 +340,6 @@ function showEventDetails(data) {
 	events.find('#event-pulse').text(data.pulse);
 	events.find('#event-lat').text(data.latitude);
 	events.find('#event-long').text(data.longitude);
-	map.clearMarkers();
-	map.addMarker(data.latitude, data.longitude, "alarm", data.id, true);
 }
 
 function init() {
@@ -311,6 +358,18 @@ function init() {
 	$('#details-col .collapse').collapse({
 		parent : '#details-col',
 		toggle : false
+	});
+	
+	$('#delete-sheep').on('click', function(e) {
+		var id = $(this).attr('data-sheep-id');
+		console.log(id);
+		jsRoutes.controllers.Sheep.delete(id).ajax({
+			dataType: 'json',
+			success: function(data) {
+				console.log(data);
+				clearSheepDetails();
+			}
+		});
 	});
 }
 

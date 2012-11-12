@@ -14,7 +14,7 @@ body {
 #map-settings {
 }
 
-#sheep-map {
+#sheep-map, #event-map {
 	height: 300px;
 	margin: 20px;
 }
