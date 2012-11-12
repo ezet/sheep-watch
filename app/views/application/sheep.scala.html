@@ -1,0 +1,55 @@
+@() @layout("sheep") {
+
+<div id="sheep-page">
+	<div class="row">
+		<div class="span4">
+			<div id="sheep-details" class="collapse in">
+				<h2>Sheep details</h2>
+				<ul>
+					<li>ID: <span id="sheep-id"></span></li>
+					<li>RFID: <span id="sheep-rfid"></span></li>
+					<li>Name: <span id="sheep-name"></span></li>
+					<li>Weight: <span id="sheep-name"></span></li>
+					<li>Date of birth: <span id="sheep-birth"></span></li>
+					<li>Attacked: <span id="sheep-attacked"></span></li>
+					<li>Notes: <span id="sheep-notes"></span></li>
+				</ul>
+			</div>
+		</div>
+		<div class="span8">
+			<div id="sheep-map" class="span11">Map</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<div class="alert alert-info">
+				<button type="button" class="close" data-dismiss="alert">×</button>
+				<strong>Info!</strong> <span class="alert-msg">Could not find
+					any events registered on this animal.</span>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<div id="sheep-pane">
+				<table id="sheep-list" cellpadding="0" cellspacing="0" border="0"
+					class="table table-striped table-bordered table-hover">
+
+					<thead>
+						<tr>
+							<th>InternalId</th>
+							<th>SheepId</th>
+							<th>rfid</th>
+							<th>Name</th>
+							<th>Weight</th>
+							<th>Date of birth</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+}

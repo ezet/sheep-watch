@@ -5,6 +5,10 @@ import play.mvc.Result;
 
 public class Map extends Controller {
 	
+	public static Result index() {
+		return ok(views.html.application.map.render());
+	}
+	
 	public static Result sheep(Long id) {
 		return TODO;
 	}

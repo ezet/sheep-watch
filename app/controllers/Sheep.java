@@ -18,8 +18,12 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 public class Sheep extends Controller {
-
+	
 	public static Result index() {
+		return ok(views.html.application.sheep.render());
+	}
+
+	public static Result list() {
 		// TODO require login
 		List<models.Sheep> list = models.Sheep.findByProducerId(Long.valueOf(session("producerId")));
 
@@ -31,12 +35,10 @@ public class Sheep extends Controller {
 		ObjectMapper mapper = new ObjectMapper();
 		ObjectNode node = mapper.createObjectNode();
 		node.put("data", Json.toJson(list));
-
 		return ok(node);
 	}
 	
 	public static Result positions() {
-		
 		return TODO;
 	}
 	

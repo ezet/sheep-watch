@@ -1,5 +1,21 @@
-@(user: models.User)
+@(page: String)(content : Html) @head(page) @navbar(page)
 
-@main("Sheep Watch") {
-    
-}
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span3">Menu</div>
+		<div class="span9">
+			<div class="container-fluid">
+				<div class="row-fluid">@content</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<hr>
+	<footer>
+		<div id="footer">
+			<p>&copy; Sheep Watch 2012</p>
+		</div>
+	</footer>
+
+@footer()

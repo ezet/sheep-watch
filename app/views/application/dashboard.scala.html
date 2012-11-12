@@ -1,32 +1,5 @@
-@(title: String)(content: Html) @head(title)
+@() @layout("dashboard") {
 
-<div class="navbar navbar-inverse navbar-fixed-top">
-	<div class="navbar-inner">
-		<div class="container">
-			<a class="btn btn-navbar" data-toggle="collapse"
-				data-target=".nav-collapse"> <span class="icon-bar"></span> <span
-				class="icon-bar"></span> <span class="icon-bar"></span>
-			</a> <a class="brand" href="#">Sheep Watch</a>
-			<div class="nav-collapse collapse">
-				<ul class="nav">
-					<li class="active"><a href="#">Home</a></li>
-					<li><a href="#about">About</a></li>
-					<li><a href="#contact">Contact</a></li>
-					<li><a href="#options">Options</a></li>
-					<li><a href="#help">Help</a></li>
-				</ul>
-				@helper.form(action = routes.Application.search("search"), 'class ->
-				"navbar-form pull-left") { <input class="span3 search-query"
-					name="search" type="text" placeholder="Search..." /> }
-				@helper.form(action = routes.Application.logout(), 'class ->
-				"navbar-form pull-right") {
-				<button type="submit" class="btn">Sign out</button>
-				}
-			</div>
-			<!--/.nav-collapse -->
-		</div>
-	</div>
-</div>
 <!-- /navbar -->
 
 <!--  Modals -->
@@ -44,7 +17,8 @@
 		<div class="control-group">
 			<label class="control-label" for="sheepId">Sheep ID</label>
 			<div class="controls">
-				<input name="sheepId" type="number" placeholder="Sheep ID" required autofocus>
+				<input name="sheepId" type="number" placeholder="Sheep ID" required
+					autofocus>
 			</div>
 		</div>
 		<div class="control-group">
@@ -81,184 +55,113 @@
 	</div>
 </div>
 
-<div class="container-fluid">
-	<div class="row-fluid">
-		<div class="span3 container">
-			<div class="collapsible">
-				<div id="event-details" class="collapse in">
-				<h2>Event details</h2>
-					<ul>
-					<li>Type: <span id="event-type"></span></li>
-					<li>RFID: <span id="event-rfid"></span></li>
-					<li>Sheep ID: <span id="event-id"></span></li>
-					<li>Sent: <span id="event-time"></span></li>
-					<li>Temperature: <span id="event-temp"></span></li>
-					<li>Pulse: <span id="event-pulse"></span></li>
-					<li>Latitude: <span id="event-lat"></span></li>
-					<li>Longitude: <span id="event-long"></span></li>
-					</ul>
-				</div>
-
+<div class="span6">
+	<div class="tabbable">
+		<ul id="tab-nav" class="nav nav-tabs">
+			<li id="map-tab" class="active"><a href="#map-pane"
+				data-toggle="tab">Map</a></li>
+			<li id="sheep-tab"><a href="#sheep-pane" data-toggle="tab">Sheep</a></li>
+			<li id="event-tab"><a href="#event-pane" data-toggle="tab">Events</a></li>
+			<li class="pull-right"><button class="btn btn-primary"
+					data-toggle="modal" data-target="#add-sheep-modal">Add new
+					sheep</button></li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active" id="map-pane">
+				<div id="map-canvas"></div>
 			</div>
-		</div>
-		<div class="span6 container">
-			<div class="tabbable">
-				<ul id="tab-nav" class="nav nav-tabs">
-					<li id="map-tab" class="active"><a href="#map-pane"
-						data-toggle="tab">Map</a></li>
-					<li id="sheep-tab"><a href="#sheep-pane" data-toggle="tab">Sheep</a></li>
-					<li id="event-tab"><a href="#event-pane" data-toggle="tab">Events</a></li>
-					<li class="pull-right"><button class="btn btn-primary"
-							data-toggle="modal" data-target="#add-sheep-modal">Add
-							new sheep</button></li>
-				</ul>
-				<div class="tab-content">
-					<div class="tab-pane active" id="map-pane">
-						<div id="map-canvas"></div>
-					</div>
-					<div class="tab-pane" id="sheep-pane">
-						<table id="sheep-list" cellpadding="0" cellspacing="0" border="0"
-							class="table table-striped table-bordered table-hover">
+			<div class="tab-pane" id="sheep-pane">
+				<table id="sheep-list" cellpadding="0" cellspacing="0" border="0"
+					class="table table-striped table-bordered table-hover">
 
-							<thead>
-								<tr>
-									<th>InternalId</th>
-									<th>SheepId</th>
-									<th>rfid</th>
-									<th>Name</th>
-									<th>Weight</th>
-									<th>Date of birth</th>
-								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-						</table>
-					</div>
-					<div class="tab-pane" id="event-pane">
-						<table id="event-list" cellpadding="0" cellspacing="0" border="0"
-							class="table table-striped table-bordered">
-
-
-							<thead>
-								<tr>
-									<th>Event ID</th>
-									<th>Sheep ID</th>
-									<th>Type</th>
-									<th>Sent</th>
-									<th>Pulse</th>
-									<th>Temperature</th>
-								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-						</table>
-					</div>
-				</div>
+					<thead>
+						<tr>
+							<th>InternalId</th>
+							<th>SheepId</th>
+							<th>rfid</th>
+							<th>Name</th>
+							<th>Weight</th>
+							<th>Date of birth</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
 			</div>
-		</div>
-		<div class="span3">
-			<div class="accordion" id="accordion2">
-				<div class="accordion-group">
-					<div class="accordion-heading">
-						<a class="collapsable-toggle accordion-toggle"
-							data-toggle="collapse" data-target="#recent-alarms"> Recent
-							alarms (Owned)</a>
-					</div>
-					<div id="recent-alarms" class="collapsable-body collapse in">
-						<div class="accordion-inner">loading...</div>
-					</div>
-				</div>
-				<div class="accordion-group">
-					<div class="accordion-heading">
-						<a class="accordion-toggle" data-toggle="collapse"
-							data-target="#recent-exceptions">Recent exceptions</a>
-					</div>
-					<div id="recent-exceptions" class="collapsable-body collapse in">
-						<div class="accordion-inner">loading...</div>
-					</div>
-				</div>
-				<div class="accordion-group">
-					<div class="accordion-heading">
-						<a class="accordion-toggle" data-toggle="collapse"
-							data-target="#recent-alarms2">Recent alarms (Nearby)</a>
-					</div>
-					<div id="recent-alarms2" class="collapsable-body collapse in">
-						<div class="accordion-inner">Recent alarms content</div>
-					</div>
-				</div>
-				<div class="accordion-group">
-					<div class="accordion-heading">
-						<a class="accordion-toggle" data-toggle="collapse"
-							data-target="#map-settings">Map settings</a>
-					</div>
-					<div id="map-settings" class="collapsable-body collapse in">
-						<div class="accordion-inner">
-							<div id="map-settings">
-								<label class="checkbox"> <input type="checkbox"
-									name="group" value="1" /> Show attacks on your animals
-								</label> </label> <label class="checkbox"> <input type="checkbox"
-									name="group" value="2" /> Show exceptions
-								</label> <label class="checkbox"> <input type="checkbox"
-									name="group" value="3" /> Show other attacks
-								</label>
-							</div>
-						</div>
-					</div>
-				</div>
+			<div class="tab-pane" id="event-pane">
+				<table id="event-list" cellpadding="0" cellspacing="0" border="0"
+					class="table table-striped table-bordered">
 
 
+					<thead>
+						<tr>
+							<th>Event ID</th>
+							<th>Sheep ID</th>
+							<th>Type</th>
+							<th>Sent</th>
+							<th>Pulse</th>
+							<th>Temperature</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>
-
-	<hr>
-
-	<footer>
-		<div id="footer">
-			<p>&copy; Sheep Watch 2012</p>
-		</div>
-	</footer>
-
 </div>
-<!-- /container -->
-<!-- <script type="text/javascript">
-        	window.onload=function() {
+<div class="span3">
+	<div class="accordion" id="accordion2">
+		<div class="accordion-group">
+			<div class="accordion-heading">
+				<a class="collapsable-toggle accordion-toggle"
+					data-toggle="collapse" data-target="#recent-alarms"> Recent
+					alarms (Owned)</a>
+			</div>
+			<div id="recent-alarms" class="collapsable-body collapse in">
+				<div class="accordion-inner">loading...</div>
+			</div>
+		</div>
+		<div class="accordion-group">
+			<div class="accordion-heading">
+				<a class="accordion-toggle" data-toggle="collapse"
+					data-target="#recent-exceptions">Recent exceptions</a>
+			</div>
+			<div id="recent-exceptions" class="collapsable-body collapse in">
+				<div class="accordion-inner">loading...</div>
+			</div>
+		</div>
+		<div class="accordion-group">
+			<div class="accordion-heading">
+				<a class="accordion-toggle" data-toggle="collapse"
+					data-target="#recent-alarms2">Recent alarms (Nearby)</a>
+			</div>
+			<div id="recent-alarms2" class="collapsable-body collapse in">
+				<div class="accordion-inner">Recent alarms content</div>
+			</div>
+		</div>
+		<div class="accordion-group">
+			<div class="accordion-heading">
+				<a class="accordion-toggle" data-toggle="collapse"
+					data-target="#map-settings">Map settings</a>
+			</div>
+			<div id="map-settings" class="collapsable-body collapse in">
+				<div class="accordion-inner">
+					<div id="map-settings">
+						<label class="checkbox"> <input type="checkbox"
+							name="group" value="1" /> Show attacks on your animals
+						</label> </label> <label class="checkbox"> <input type="checkbox"
+							name="group" value="2" /> Show exceptions
+						</label> <label class="checkbox"> <input type="checkbox"
+							name="group" value="3" /> Show other attacks
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
 
-        	  // get tab container
-        	  var container = document.getElementById("tabContainer");
-        	    // set current tab
-        	    var navitem = container.querySelector(".tabs ul li");
-        	    //store which tab we are on
-        	    var ident = navitem.id.split("_")[1];
-        	    navitem.parentNode.setAttribute("data-current",ident);
-        	    //set current tab with class of activetabheader
-        	    navitem.setAttribute("class","tabActiveHeader");
 
-        	    //hide two tab contents we don't need
-        	    var pages = container.querySelectorAll(".tabpage");
-        	    for (var i = 1; i < pages.length; i++) {
-        	      pages[i].style.display="none";
-        	    }
+	</div>
+</div>
 
-        	    //this adds click event to tabs
-        	    var tabs = container.querySelectorAll(".tabs ul li");
-        	    for (var i = 0; i < tabs.length; i++) {
-        	      tabs[i].onclick=displayPage;
-        	    }
-        	}
-
-        	// on click of one of tabs
-        	function displayPage() {
-        	  var current = this.parentNode.getAttribute("data-current");
-        	  //remove class of activetabheader and hide old contents
-        	  document.getElementById("tabHeader_" + current).removeAttribute("class");
-        	  document.getElementById("tabpage_" + current).style.display="none";
-
-        	  var ident = this.id.split("_")[1];
-        	  //add class of activetabheader to new active tab and show contents
-        	  this.setAttribute("class","tabActiveHeader");
-        	  document.getElementById("tabpage_" + ident).style.display="block";
-        	  this.parentNode.setAttribute("data-current",ident);
-        	}
-		</script>	-->
-@footer()
+}

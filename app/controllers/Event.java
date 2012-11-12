@@ -5,24 +5,79 @@ import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import models.Event.MessageType;
+
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 
-import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 public class Event extends Controller {
-	
+
 	private static ObjectMapper mapper = new ObjectMapper();
-	
+
 	static {
 		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss"));
 	}
 	
+	public static Result index() {
+		return ok(views.html.application.events.render());
+	}
+	
+	public static Result listBySheep(Long sheepId) {
+		List<models.Event> events = models.Event.findBySheepId(sheepId);
+		for (models.Event event : events) {
+			prepare(event);
+		}
+
+		ObjectNode node = mapper.createObjectNode();
+		StringWriter writer = new StringWriter();
+
+		try {
+			mapper.writeValue(writer, events);
+			node.put("data", mapper.readTree(writer.toString()));
+		} catch (JsonGenerationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ok(node);
+	}
+
+	public static Result list() {
+		List<models.Event> events = models.Event.findByProducerId(Long.valueOf(session("producerId")), 10);
+		for (models.Event event : events) {
+			prepare(event);
+		}
+
+		ObjectNode node = mapper.createObjectNode();
+		StringWriter writer = new StringWriter();
+
+		try {
+			mapper.writeValue(writer, events);
+			node.put("data", mapper.readTree(writer.toString()));
+		} catch (JsonGenerationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ok(node);
+	}
+
 	public static Result show(Long id) {
 		models.Event event = models.Event.find.byId(id);
 		prepare(event);
@@ -42,35 +97,23 @@ public class Event extends Controller {
 		return ok(writer.toString());
 	}
 
-	public static Result index() {
-		List<models.Event> events = models.Event.findByProducerId(Long.valueOf(session("producerId")), 10);
+	public static Result alarmList(Integer num) {
+		List<models.Event> events = models.Event.findTypeByProducerId(Long.valueOf(session("producerId")), MessageType.ALARM, num);
 		for (models.Event event : events) {
 			prepare(event);
 		}
-		
-		ObjectNode node = mapper.createObjectNode();
 		StringWriter writer = new StringWriter();
-		
 		try {
 			mapper.writeValue(writer, events);
-			node.put("data", mapper.readTree(writer.toString()));
-		} catch (JsonGenerationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return ok(node);
+		return ok(writer.toString());
 	}
-	
-	
 
-	public static Result eventsByType(String type, Integer num) {
-		List<models.Event> events = models.Event.findTypeByProducerId(Long.valueOf(session("producerId")), type, num);
+	public static Result updateList(Integer num) {
+		List<models.Event> events = models.Event.findTypeByProducerId(Long.valueOf(session("producerId")), MessageType.ALARM, num);
 		for (models.Event event : events) {
 			prepare(event);
 		}
@@ -93,12 +136,11 @@ public class Event extends Controller {
 	public static Result recentExceptions(Integer num) {
 		return TODO;
 	}
-	
+
 	private static void prepare(models.Event event) {
 		event.rfid = event.sheep.rfid;
 		event.sheepId = event.sheep.sheepId;
 		event.sheep = null;
 	}
-	
 
 }

@@ -15,9 +15,6 @@ import play.data.format.Formats;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
-import com.avaje.ebean.RawSql;
-import com.avaje.ebean.RawSqlBuilder;
-
 @Entity
 @Table(name = "Event")
 public class Event extends Model {
@@ -61,8 +58,8 @@ public class Event extends Model {
 		return find.where().eq("sheep.producer.producerId", id).orderBy("timeSent").setMaxRows(num).findList();
 	}
 	
-	public static List<Event> findTypeByProducerId(long producerId, String type, int num) {
-		return find.where().eq("sheep.producer.producerId", producerId).eq("messageType", MessageType.valueOf(type)).orderBy("timeSent").setMaxRows(num).findList();
+	public static List<Event> findTypeByProducerId(long producerId, MessageType type, int num) {
+		return find.where().eq("sheep.producer.producerId", producerId).eq("messageType", type).orderBy("timeSent").setMaxRows(num).findList();
 	}
 	
 	public static List<Event> findLatestEvents(long producerId) {
@@ -73,8 +70,8 @@ public class Event extends Model {
 		return find.where().eq("sheep.sheepId", sheepId).orderBy("timeSent").setMaxRows(1).findUnique();
 	}
 	
-	public static List<Event> byBySheepId(long id) {
-		return find.where().eq("sheep.sheepId", id).findList();
+	public static List<Event> findBySheepId(long id) {
+		return find.where().eq("sheep.sheepId", id).orderBy("timeSent").findList();
 	}
 
 	public static List<Event> findByRfid(long id) {

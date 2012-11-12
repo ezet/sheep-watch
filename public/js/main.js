@@ -1,54 +1,145 @@
+$(document).ready(function() {
+	init();
+	initButtons();
+	initMap();
+	initSheepList();
+	initEventList();
+	recentAlarmsCall();
+	sheepMap.init();
+});
+
 var locations = [ [ 'Sau 01', 62.2, 9 ], [ 'Sau 02', 62, 9.1 ],
 		[ 'Sau 03', 62.3, 8.9 ], [ 'Sau 04', 62, 9 ] ];
 
-var statKartOptions = {
-	getTileUrl : function(coord, zoom) {
-		return "http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom="
-				+ zoom + "&x=" + coord.x + "&y=" + coord.y;
-	},
-	tileSize : new google.maps.Size(256, 256),
-	maxZoom : 17,
-	minZoom : 6
-};
+var map = new gmap("map-canvas");
 
-var statKartType = new google.maps.ImageMapType(statKartOptions);
+var sheepMap = new gmap("sheep-map");
+
+function gmap(selector) {
+
+	this.selector = selector
+	this.statKartOptions = {
+		getTileUrl : function(coord, zoom) {
+			return "http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom="
+					+ zoom + "&x=" + coord.x + "&y=" + coord.y;
+		},
+		tileSize : new google.maps.Size(256, 256),
+		maxZoom : 17,
+		minZoom : 6
+	};
+
+	this.statKartType = new google.maps.ImageMapType(this.statKartOptions);
+
+	this.eventMarkers = [];
+	this.sheepMarkers = [];
+	this.alarmMarkers = [];
+	this.markers = [];
+
+	this.init = function() {
+		var div = $('#' + this.selector);
+		if (!div.length) {
+			return false;
+		}
+		var latlng = new google.maps.LatLng(62, 9);
+		var myOptions = {
+			zoom : 8,
+			center : latlng,
+			mapTypeId : "STATKART",
+			streetViewControl : false,
+			mapTypeControl : false
+		};
+
+		this.map = new google.maps.Map(document.getElementById(this.selector),
+				myOptions);
+		this.map.mapTypes.set("STATKART", this.statKartType);
+
+		var infoWindow = new google.maps.InfoWindow();
+		var bounds = new google.maps.LatLngBounds();
+		var marker, i;
+
+		for (i = 0; i < locations.length; i++) {
+			var markerLatLng = new google.maps.LatLng(locations[i][1],
+					locations[i][2])
+			marker = new google.maps.Marker({
+				position : markerLatLng,
+				map : this.map
+			});
+			bounds.extend(markerLatLng);
+
+			this.markers.push(marker);
+			google.maps.event.addListener(marker, 'click',
+					(function(marker, i) {
+						return function() {
+							infoWindow.setContent(locations[i][0]);
+							infoWindow.open(this.map, marker);
+						};
+					})(marker, i));
+		}
+		;
+		this.map.fitBounds(bounds);
+	}
+
+	this.fitBounds = function() {
+		var bounds = new google.maps.LatLngBounds();
+		$.each(this.markers, function(k, v) {
+			bounds.extend(v.getPosition());
+		});
+		this.map.fitBounds(bounds);
+	}
+
+	this.clearMarkers = function() {
+		$.each(this.markers, function(k, v) {
+			v.setMap(null);
+		});
+		this.markers.length = 0;
+	}
+
+	this.addMarker = function(lat, lng, type, id, center) {
+		type.toUpperCase();
+		var pos = new google.maps.LatLng(lat, lng);
+		var marker = new google.maps.Marker({
+			position : pos,
+			map : this.map
+		});
+		
+		google.maps.event.addListener(marker, 'hover', function() {
+		});
+		var icon = jsRoutes.controllers.Assets.at("img/alert.png");
+		this.markers.push(marker);
+		if (type === "ALARM") {
+			this.alarmMarkers[id] = marker;
+			marker.setIcon(icon);
+		} else if (type === "UPDATE") {
+			this.eventMarkers[id] = marker;
+		} else if (type === "SHEEP") {
+			this.sheepMarkers[id] = marker;
+		}
+		if (center == true) {
+			this.map.setCenter(pos);
+			this.map.setZoom(12);
+		}
+	}
+}
+
+function showAllAlarms() {
+	jsRoutes.controllers.Event.alarmList(5).ajax({
+		dataType : 'json',
+		success : function(data) {
+			map.clearMarkers();
+			$.each(data, function(k, v) {
+				map.addMarker(v.latitude, v.longitude, "ALARM", v.id)
+			});
+			map.fitBounds();
+		}
+	});
+}
 
 function initMap() {
-	var latlng = new google.maps.LatLng(62, 9);
-	var myOptions = {
-		zoom : 8,
-		center : latlng,
-		mapTypeId : "STATKART",
-		streetViewControl : false,
-		mapTypeControl : false
-	};
-	var map = new google.maps.Map(document.getElementById("map-canvas"),
-			myOptions);
-	map.mapTypes.set("STATKART", statKartType);
-
-	var infoWindow = new google.maps.InfoWindow();
-	var bounds = new google.maps.LatLngBounds();
-	var marker, i;
-
-	for (i = 0; i < locations.length; i++) {
-		var markerLatLng = new google.maps.LatLng(locations[i][1],
-				locations[i][2])
-		marker = new google.maps.Marker({
-			position : markerLatLng,
-			map : map
-		});
-		bounds.extend(markerLatLng);
-
-		google.maps.event.addListener(marker, 'click', (function(marker, i) {
-			return function() {
-				infoWindow.setContent(locations[i][0]);
-				infoWindow.open(map, marker);
-			};
-		})(marker, i));
+	if ($('#map-canvas').length) {
+		map.init();
+		showAllAlarms();
 	}
-	;
-	map.fitBounds(bounds);
-};
+}
 
 $.extend($.fn.dataTableExt.oStdClasses, {
 	"sSortAsc" : "header headerSortDown",
@@ -61,21 +152,48 @@ $.extend($.fn.dataTableExt.oStdClasses, {
 });
 
 function initSheepList() {
+	$("#sheep-list tbody")
+			.on(
+					'click',
+					'tr',
+					function(e) {
+						if ($(this).hasClass('row-selected')) {
+							$(this).removeClass('row-selected');
+						} else {
+							sheepTable.$('tr.row-selected').removeClass(
+									'row-selected');
+							$(this).addClass('row-selected');
+							var id = sheepTable.fnGetData(this, 0)
+							showSheep(id);
+							jsRoutes.controllers.Event.listBySheep(id).ajax(
+									{
+										dataType : 'json',
+										success : function(data) {
+											sheepMap.clearMarkers();
+											if (data.data.length) {
+												$('#sheep-page .alert').hide();
+												$.each(data.data, function(k,
+														event) {
+													sheepMap.addMarker(
+															event.latitude,
+															event.longitude,
+															event.messageType,
+															event.id, false);
+												});
+												sheepMap.fitBounds();
+											} else {
+												$('#sheep-page .alert').show();
+											}
+										}
+									});
+						}
+					});
 
-	$("#sheep-list tbody tr").live('click', function(e) {
-		if ($(this).hasClass('row-selected')) {
-			$(this).removeClass('row-selected');
-		} else {
-			sheepTable.$('tr.row-selected').removeClass('row-selected');
-			$(this).addClass('row-selected');
-		}
-	});
-
-	var sheepTable = $("#sheep-list").dataTable({
+	sheepTable = $("#sheep-list").dataTable({
 		"bProcessing" : true,
 		"sAjaxDataProp" : "data",
 		"sPaginationType" : "bootstrap",
-		"sAjaxSource" : jsRoutes.controllers.Sheep.index().absoluteURL(),
+		"sAjaxSource" : jsRoutes.controllers.Sheep.list().absoluteURL(),
 		// "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
 		"aoColumns" : [ {
 			"mData" : "id",
@@ -100,7 +218,7 @@ function initEventList() {
 		"bProcessing" : true,
 		"sAjaxDataProp" : "data",
 		"sPaginationType" : "bootstrap",
-		"sAjaxSource" : jsRoutes.controllers.Event.index().absoluteURL(),
+		"sAjaxSource" : jsRoutes.controllers.Event.list().absoluteURL(),
 		// "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
 		"aoColumns" : [ {
 			"mData" : "id",
@@ -137,31 +255,68 @@ function initButtons() {
 	$('#add-sheep-form').ajaxForm(addSheepOptions);
 }
 
+function showSheep(id) {
+	jsRoutes.controllers.Sheep.show(id).ajax({
+		dataType : 'json',
+		success : showSheepDetails
+	});
+}
+
+function showSheepDetails(data) {
+	var sheep = $('#sheep-details');
+	sheep.find('#sheep-id').text(data.sheepId);
+	sheep.find('#sheep-rfid').text(data.rfid);
+	sheep.find('#sheep-name').text(data.name);
+	sheep.find('#sheep-weight').text(data.birthWeight);
+	sheep.find('#sheep-birth').text(data.dateOfBirth);
+	sheep.find('#sheep-notes').text(data.notes);
+	sheep.find('#sheep-attacked').text(data.attacked);
+}
+
+function showEvent(id) {
+	jsRoutes.controllers.Event.show(id).ajax({
+		dataType : 'json',
+		success : showEventDetails
+	});
+}
+
+function showEventDetails(data) {
+	var events = $('#event-details');
+	events.find('#sheep-link').attr('data-sheep-id', data.sheepId);
+	events.find('#event-type').text(data.messageType);
+	events.find('#event-id').text(data.sheepId);
+	events.find('#event-rfid').text(data.rfid);
+	events.find('#event-time').text(data.timeSent);
+	events.find('#event-temp').text(data.temperature);
+	events.find('#event-pulse').text(data.pulse);
+	events.find('#event-lat').text(data.latitude);
+	events.find('#event-long').text(data.longitude);
+	map.clearMarkers();
+	map.addMarker(data.latitude, data.longitude, "alarm", data.id, true);
+}
 
 function init() {
 	$('#recent-alarms').on('click', 'a', function(e) {
 		e.preventDefault();
-		var id = $(this).attr("data-event-id");
-		jsRoutes.controllers.Event.show(id).ajax({
-			dataType : 'json',
-			success: function(data) {
-				var events = $('#event-details ul');
-				events.find('#event-type').text(data.messageType);
-				events.find('#event-id').text(data.sheepId);
-				events.find('#event-rfid').text(data.rfid);
-				events.find('#event-time').text(data.timeSent);
-				events.find('#event-temp').text(data.temperature);
-				events.find('#event-pulse').text(data.pulse);
-				events.find('#event-lat').text(data.latitude);
-				events.find('#event-long').text(data.longitude);
-			}
-		})
+		var id = $(this).attr('data-event-id');
+		showEvent(id);
+	});
+
+	$('#event-details #sheep-link').on('click', function(e) {
+		e.preventDefault();
+		var id = $(this).attr('data-sheep-id');
+		showSheep(id);
+	});
+
+	$('#details-col .collapse').collapse({
+		parent : '#details-col',
+		toggle : false
 	});
 }
 
 var recentAlarmsInterval = window.setInterval('recentAlarmsCall()', 30000);
 var recentAlarmsCall = function() {
-	jsRoutes.controllers.Event.eventsByType(5).ajax(
+	jsRoutes.controllers.Event.alarmList(5).ajax(
 			{
 				dataType : 'json',
 				success : function(data) {
@@ -176,15 +331,6 @@ var recentAlarmsCall = function() {
 				}
 			});
 }
-
-$(document).ready(function() {
-	initButtons();
-	initMap();
-	initSheepList();
-	initEventList();
-	recentAlarmsCall();
-	init();
-});
 
 /* API method to get paging information */
 $.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings) {

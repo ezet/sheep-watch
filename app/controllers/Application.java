@@ -20,7 +20,7 @@ public class Application extends Controller {
 		if (session("username") == null) {
 			return redirect(routes.Application.index());
 		}
-		return ok(index.render(null));
+		return ok(dashboard.render());
 	}
 
 	public static Result settings() {
@@ -76,12 +76,17 @@ public class Application extends Controller {
 		return ok(Routes.javascriptRouter("jsRoutes",
 
 				// Routes for Sheep
-				controllers.routes.javascript.Sheep.index(),
+				controllers.routes.javascript.Sheep.list(),
 				controllers.routes.javascript.Sheep.delete(),
+				controllers.routes.javascript.Sheep.show(),
 				
-				controllers.routes.javascript.Event.index(),
-				controllers.routes.javascript.Event.eventsByType(),
-				controllers.routes.javascript.Event.show()
+				controllers.routes.javascript.Event.list(),
+				controllers.routes.javascript.Event.listBySheep(),
+				controllers.routes.javascript.Event.alarmList(),
+				controllers.routes.javascript.Event.updateList(),
+				controllers.routes.javascript.Event.show(),
+				
+				controllers.routes.javascript.Assets.at()
 				
 		));
 	}

@@ -14,7 +14,9 @@ POST	/login						controllers.Application.authenticate()
 GET		/logout 					controllers.Application.logout()
 
 # Sheep
+
 GET 	/sheep  					controllers.Sheep.index()
+GET 	/sheep/list					controllers.Sheep.list()
 GET 	/sheep/:id					controllers.Sheep.show(id: Long)
 GET		/sheep/:id/position			controllers.Sheep.position(id: Long)
 POST	/sheep 						controllers.Sheep.add()
@@ -23,14 +25,18 @@ DELETE	/sheep/:id					controllers.Sheep.delete(id: Long)
 
 # Events
 GET		/events						controllers.Event.index()
+GET 	/events/list				controllers.Event.list()
+GET		/events/list/:id			controllers.Event.listBySheep(id: Long)			
 GET		/events/:id					controllers.Event.show(id: Long)
-GET		/alarms 					controllers.Event.eventsByType(typ = "ALARM", num: Integer ?= 0)
-GET		/alarms/:num				controllers.Event.eventsByType(typ = "ALARM", num: Integer)
+GET		/alarms 					controllers.Event.alarmList(num: Integer ?= 0)
+GET		/alarms/:num				controllers.Event.alarmList(num: Integer)
+GET 	/updates/:num	   			controllers.Event.updateList(num: Integer)
 GET		/events/exceptions/recent/:num	controllers.Event.recentExceptions(num: Integer)
 
 # Map
 GET		/map/sheep/:id				controllers.Map.sheep(id: Long)
 GET		/map/event/:id				controllers.Map.event(id: Long)
+GET 	/map						controllers.Map.index()
 
 # Misc
 GET		/settings					controllers.Application.settings()
@@ -54,8 +60,8 @@ PUT		/admin/user/:id				controllers.Admin.update(id: Long)
 DELETE	/admin/user/:id				controllers.Admin.delete(id: Long)
 
 # Javascript routing
-GET     /assets/js/routes  controllers.Application.javascriptRoutes()
-GET     /assets/js/adminRoutes  controllers.Admin.javascriptRoutes()
+GET     /assets/js/routes  			controllers.Application.javascriptRoutes()
+GET     /assets/js/adminRoutes  	controllers.Admin.javascriptRoutes()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
