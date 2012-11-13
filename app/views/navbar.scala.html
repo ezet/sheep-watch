@@ -12,13 +12,13 @@
 			<div class="nav-collapse collapse">
 				<ul class="nav">
 					<li @active("dashboard")><a href="@routes.Application.index()">Dashboard</a></li>
-					<li @active("map") ><a href="@routes.Map.index()">Map</a></li>
-					<li @active("sheep") ><a href="@routes.Sheep.index()">Sheep</a></li>
-					<li @active("events") ><a href="@routes.Event.index()">Events</a></li>
-					<li @active("about") ><a href="#about">About</a></li>
+					<li @active("map")><a href="@routes.Map.index()">Map</a></li>
+					<li @active("sheep")><a href="@routes.Sheep.index()">Sheep</a></li>
+					<li @active("events")><a href="@routes.Event.index()">Events</a></li>
+					<li @active("about")><a href="#about">About</a></li>
 					<li @active("contact")><a href="#contact">Contact</a></li>
-					<li><a href="#options">Options</a></li>
-					<li><a href="#help">Help</a></li>
+					<li @active("settings")><a href="@routes.Application.settings()">Settings</a></li>
+					<li><a href="#">Help</a></li>
 				</ul>
 				@helper.form(action = routes.Application.search("search"), 'class ->
 				"navbar-form pull-left") { <input class="span3 search-query"

@@ -33,6 +33,13 @@ GET		/alarms/:num				controllers.Event.alarmList(num: Integer)
 GET 	/updates/:num	   			controllers.Event.updateList(num: Integer)
 GET		/events/exceptions/recent/:num	controllers.Event.recentExceptions(num: Integer)
 
+# Contacts
+GET		/contacts					controllers.Contact.list()
+GET		/contacts/:id				controllers.Contact.show(id: Long)
+POST	/contacts					controllers.Contact.add()
+PUT		/contacts/:id				controllers.Contact.update(id: Long)
+DELETE	/contacts/:id				controllers.Contact.delete(id: Long)
+
 # Map
 GET		/map/sheep/:id				controllers.Map.sheep(id: Long)
 GET		/map/event/:id				controllers.Map.event(id: Long)

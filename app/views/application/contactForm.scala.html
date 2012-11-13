@@ -1,0 +1,55 @@
+@(form : Form[models.Contact])
+@id =  {@form.value.get.id.toString}
+
+@helper.form(action = routes.Contact.update(form.value.get.id),'class ->
+"form-horizontal contact-form", 'id -> ("contact-form-" + id)) {
+
+<fieldset>
+	<legend>@form.value.get.name <i class="icon-remove pull-right"> </i></legend>
+	<div class="control-group">
+		<label class="control-label" for="name">Name</label>
+		<div class="controls">
+			<input name="name" type="text" placeholder="name"
+				value="@form.value.get.name">
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="email">Email</label>
+		<div class="controls">
+			<input name="email" type="email" placeholder="email"
+				value="@form.value.get.email">
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="phone">Phone</label>
+		<div class="controls">
+			<input name="phone" type="number" placeholder="phone number"
+				value="@form.value.get.phone">
+		</div>
+	</div>
+	<div class="control-group">
+		<div class="controls">
+			<label class="checkbox" for="emailAlert"> <input
+				name="emailAlert" type="checkbox" value="true" @if(form.value.get.emailAlert) { checked }>Recieve
+				email alert
+			</label> <label class="checkbox" for="callAlert"> <input
+				name="callAlert" type="checkbox" value="true" @if(form.value.get.callAlert == true) { checked }>Recieve
+				call alert
+
+			</label> <label class="checkbox" for="smsAlert"> <input
+				name="smsAlert" type="checkbox" value="true" @if(form.value.get.smsAlert == true) { checked }>Recieve
+				SMS alert
+			</label>
+		</div>
+	</div>
+	<div class="control-group">
+		<div class="controls">
+		<input type="button" class="btn btn-danger contact-form-delete"
+				data-contact-id="@id" value="Delete" />
+			<input type="submit" class="btn btn-primary contact-form-save" data-contact-id="@id"
+				value="Save" /> 
+		</div>
+	</div>
+</fieldset>
+
+}

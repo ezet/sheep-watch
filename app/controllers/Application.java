@@ -1,11 +1,17 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import models.Login;
+import play.Logger;
 import play.Routes;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.application.*;
+import views.html.application.dashboard;
+import views.html.application.login;
+import views.html.application.settings;
 
 public class Application extends Controller {
 
@@ -24,7 +30,15 @@ public class Application extends Controller {
 	}
 
 	public static Result settings() {
-		return ok(settings.render("settings"));
+		List<Form<models.Contact>> contactForms = new ArrayList<>();
+		List<models.Contact> contacts = models.Contact.findByProducerId(Long.valueOf(session("producerId")));
+		for (models.Contact contact : contacts) {
+			Form<models.Contact> contactForm = form("form", models.Contact.class);
+			contactForm = contactForm.fill(contact);
+			contact = contactForm.get();
+			contactForms.add(contactForm);
+		}
+		return ok(settings.render(contactForms));
 	}
 
 	public static Result login() {
@@ -86,6 +100,11 @@ public class Application extends Controller {
 				controllers.routes.javascript.Event.alarmList(),
 				controllers.routes.javascript.Event.updateList(),
 				controllers.routes.javascript.Event.show(),
+				
+				// Contacts
+				controllers.routes.javascript.Contact.add(),
+				controllers.routes.javascript.Contact.delete(),
+				controllers.routes.javascript.Contact.update(),
 				
 				// Misc
 				controllers.routes.javascript.Assets.at()

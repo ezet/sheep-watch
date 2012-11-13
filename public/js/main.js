@@ -272,6 +272,7 @@ function initEventList() {
 };
 
 function showRequest(formData, jqForm, options) {
+	console.log($(this));
 	console.log("Request: " + $.param(formData));
 	return true;
 }
@@ -286,7 +287,38 @@ function initButtons() {
 		beforeSubmit : showRequest,
 		success : showResponse,
 	};
+	
 	$('#add-sheep-form').ajaxForm(addSheepOptions);
+	
+	$('.contact-form').ajaxForm({
+		beforeSubmit: showRequest,
+		success: showResponse
+	});
+	
+	$('.contact-form-delete').on('click', function(e) {
+		var id = $(this).attr("data-contact-id");
+		jsRoutes.controllers.Contact.delete(id).ajax({
+			success: function(data) {
+				var alert = showInfo("Contact was successfully deleted.");
+				var form = $('#contact-form-'+id);
+				form.hide("fast", function(e) {
+					form.replaceWith(alert);
+					alert.show("fast");
+				});
+			}
+		});
+	});
+	
+	$('#new-contact-button').on('click', function(e) {
+		var form = $('#new-contact-form').clone(true, true);
+		$('#contact-forms').append(form);
+		form.show('slow');
+	});
+	
+}
+
+function showInfo(msg) {
+	return $('<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert">×</button><strong>Information!</strong> ' + msg + '</div>"');
 }
 
 function showSheep(id) {
@@ -371,6 +403,7 @@ function init() {
 			}
 		});
 	});
+	
 }
 
 var recentAlarmsInterval = window.setInterval('recentAlarmsCall()', 30000);
