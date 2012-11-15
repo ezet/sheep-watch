@@ -28,10 +28,6 @@ public class Sheep extends Controller {
 		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss"));
 	}
 
-	public static Result index() {
-		return ok(views.html.application.sheep.render());
-	}
-
 	public static Result list() {
 		List<models.Sheep> list = models.Sheep.findByProducerId(Long.valueOf(session("producerId")));
 		for (models.Sheep sheep : list) {

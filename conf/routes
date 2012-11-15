@@ -7,6 +7,13 @@ GET     /                           controllers.Application.index()
 
 # Main application
 GET		/app						controllers.Application.app()
+GET		/manage						controllers.Application.manage()
+GET		/statistics					controllers.Application.statistics()
+GET		/settings					controllers.Application.settings()
+GET		/search/:term				controllers.Application.search(term: String)
+GET		/help						controllers.Application.help()
+GET 	/about						controllers.Application.about()
+GET		/contact					controllers.Application.contact()
 
 # Authentication
 GET 	/login						controllers.Application.login()
@@ -15,7 +22,6 @@ GET		/logout 					controllers.Application.logout()
 
 # Sheep
 
-GET 	/sheep  					controllers.Sheep.index()
 GET 	/sheep/all					controllers.Sheep.list()
 GET 	/sheep/:id					controllers.Sheep.show(id: Long)
 GET		/sheep/:id/position			controllers.Sheep.position(id: Long)
@@ -25,7 +31,6 @@ PUT		/sheep/:id					controllers.Sheep.update(id: Long)
 DELETE	/sheep/:id					controllers.Sheep.delete(id: Long)
 
 # Events
-GET		/events						controllers.Event.index()
 GET 	/events/all					controllers.Event.list()
 GET		/events/:id					controllers.Event.show(id: Long)
 GET		/alarms 					controllers.Event.alarmList(num: Integer ?= 0)
@@ -46,11 +51,7 @@ GET		/map/event/:id				controllers.Map.event(id: Long)
 GET 	/map						controllers.Map.index()
 
 # Misc
-GET		/settings					controllers.Application.settings()
-GET		/search/:term				controllers.Application.search(term: String)
-GET		/help						controllers.Application.help()
-GET 	/about						controllers.Application.about()
-GET		/contact					controllers.Application.contact()
+
 		
 
 # Admin pages

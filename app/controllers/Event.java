@@ -27,7 +27,7 @@ public class Event extends Controller {
 	}
 
 	public static Result index() {
-		return ok(views.html.application.events.render());
+		return TODO;
 	}
 	
 	public static Result list() {

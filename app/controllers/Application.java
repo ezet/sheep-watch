@@ -28,6 +28,14 @@ public class Application extends Controller {
 		}
 		return ok(dashboard.render());
 	}
+	
+	public static Result manage() {
+		return ok(views.html.application.manage.render());
+	}
+	
+	public static Result statistics() {
+		return TODO;
+	}
 
 	public static Result settings() {
 		List<Form<models.Contact>> contactForms = new ArrayList<>();
