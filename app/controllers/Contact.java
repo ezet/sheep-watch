@@ -4,7 +4,9 @@ import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 
+@Security.Authenticated(Auth.class)
 public class Contact extends Controller {
 
 	public static Result list() {
@@ -31,10 +33,12 @@ public class Contact extends Controller {
 			}
 			return ok(String.valueOf(contact.id));
 		}
-
 	}
 
 	public static Result delete(Long id) {
+		if (!Auth.isOwnerOfContact(id)) {
+			return unauthorized();
+		}
 		models.Contact contact = models.Contact.find.ref(id);
 		try {
 			contact.delete();
@@ -45,6 +49,9 @@ public class Contact extends Controller {
 	}
 
 	public static Result update(Long id) {
+		if (!Auth.isOwnerOfContact(id)) {
+			return unauthorized();
+		}
 		Form<models.Contact> form = form(models.Contact.class).bindFromRequest();
 		if (form.hasErrors()) {
 			return badRequest(form.errorsAsJson());

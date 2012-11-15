@@ -77,5 +77,9 @@ public class Sheep extends Model {
 	public String toString() {
 		return "id:" + id + " sheepId:" + sheepId + " producerId:" + producerId + " rfid:" + rfid;
 	}
+	
+	public static boolean isOwner(Long sheep, String producer) {
+		return find.where().eq("id", sheep).eq("producer.producerId", producer).findRowCount() > 0;
+	}
 
 }

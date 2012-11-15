@@ -1,130 +1,17 @@
 $(document).ready(function() {
 	init();
+	initSheepToolbar();
 	initButtons();
 	initMap();
-	initSheepList();
+	initSheepTable();
 	initEventList();
 	recentAlarmsCall();
 	sheepMap.init();
-	console.log(eventMap);
-	console.log("test");
-	eventMap.init();
 });
-
-var locations = [ [ 'Sau 01', 62.2, 9 ], [ 'Sau 02', 62, 9.1 ],
-		[ 'Sau 03', 62.3, 8.9 ], [ 'Sau 04', 62, 9 ] ];
 
 var map = new gmap("map-canvas");
 
 var sheepMap = new gmap("sheep-map");
-
-var eventMap = new gmap("event-map");
-
-function gmap(selector) {
-	this.selector = selector
-	this.statKartOptions = {
-		getTileUrl : function(coord, zoom) {
-			return "http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom="
-					+ zoom + "&x=" + coord.x + "&y=" + coord.y;
-		},
-		tileSize : new google.maps.Size(256, 256),
-		maxZoom : 17,
-		minZoom : 6
-	};
-
-	this.statKartType = new google.maps.ImageMapType(this.statKartOptions);
-
-	this.eventMarkers = [];
-	this.sheepMarkers = [];
-	this.alarmMarkers = [];
-	this.markers = [];
-
-	this.init = function() {
-		var div = $('#' + this.selector);
-		console.log(div);
-		if (!div.length) {
-			return false;
-		}
-		var latlng = new google.maps.LatLng(62, 9);
-		var myOptions = {
-			zoom : 8,
-			center : latlng,
-			mapTypeId : "STATKART",
-			streetViewControl : false,
-			mapTypeControl : false
-		};
-
-		this.map = new google.maps.Map(document.getElementById(this.selector),
-				myOptions);
-		this.map.mapTypes.set("STATKART", this.statKartType);
-
-		var infoWindow = new google.maps.InfoWindow();
-		var bounds = new google.maps.LatLngBounds();
-		var marker, i;
-
-		for (i = 0; i < locations.length; i++) {
-			var markerLatLng = new google.maps.LatLng(locations[i][1],
-					locations[i][2])
-			marker = new google.maps.Marker({
-				position : markerLatLng,
-				map : this.map
-			});
-			bounds.extend(markerLatLng);
-
-			this.markers.push(marker);
-			google.maps.event.addListener(marker, 'click',
-					(function(marker, i) {
-						return function() {
-							infoWindow.setContent(locations[i][0]);
-							infoWindow.open(this.map, marker);
-						};
-					})(marker, i));
-		}
-		;
-		this.map.fitBounds(bounds);
-	}
-
-	this.fitBounds = function() {
-		var bounds = new google.maps.LatLngBounds();
-		$.each(this.markers, function(k, v) {
-			bounds.extend(v.getPosition());
-		});
-		this.map.fitBounds(bounds);
-	}
-
-	this.clearMarkers = function() {
-		$.each(this.markers, function(k, v) {
-			v.setMap(null);
-		});
-		this.markers.length = 0;
-	}
-
-	this.addMarker = function(lat, lng, type, id, center) {
-		type.toUpperCase();
-		var pos = new google.maps.LatLng(lat, lng);
-		var marker = new google.maps.Marker({
-			position : pos,
-			map : this.map
-		});
-
-		google.maps.event.addListener(marker, 'hover', function() {
-		});
-		var icon = jsRoutes.controllers.Assets.at("img/alert.png");
-		this.markers.push(marker);
-		if (type === "ALARM") {
-			this.alarmMarkers[id] = marker;
-			marker.setIcon(icon);
-		} else if (type === "UPDATE") {
-			this.eventMarkers[id] = marker;
-		} else if (type === "SHEEP") {
-			this.sheepMarkers[id] = marker;
-		}
-		if (center == true) {
-			this.map.setCenter(pos);
-			this.map.setZoom(12);
-		}
-	}
-}
 
 function showAllAlarms() {
 	jsRoutes.controllers.Event.alarmList(5).ajax({
@@ -148,6 +35,16 @@ function initMap() {
 	}
 }
 
+function disableTableToolbar() {
+	$('.edit-sheep-button').addClass('disabled');
+	$('.delete-sheep-button').addClass('disabled');
+}
+
+function enableTableToolbar() {
+	$('.edit-sheep-button').removeClass('disabled');
+	$('.delete-sheep-button').removeClass('disabled');
+}
+
 $.extend($.fn.dataTableExt.oStdClasses, {
 	"sSortAsc" : "header headerSortDown",
 	"sSortDesc" : "header headerSortUp",
@@ -158,50 +55,165 @@ $.extend($.fn.dataTableExt.oStdClasses, {
 	"sWrapper" : "dataTables_wrapper form-inline"
 });
 
-function initSheepList() {
-	$("#sheep-list tbody")
-			.on(
-					'click',
-					'tr',
-					function(e) {
-						if ($(this).hasClass('row-selected')) {
-							$(this).removeClass('row-selected');
-						} else {
-							sheepTable.$('tr.row-selected').removeClass(
-									'row-selected');
-							$(this).addClass('row-selected');
-							var id = sheepTable.fnGetData(this, 0)
-							showSheep(id);
-							jsRoutes.controllers.Event.listBySheep(id).ajax(
-									{
-										dataType : 'json',
-										success : function(data) {
-											sheepMap.clearMarkers();
-											if (data.data.length) {
-												$('#sheep-page .alert').hide();
-												$.each(data.data, function(k,
-														event) {
-													sheepMap.addMarker(
-															event.latitude,
-															event.longitude,
-															event.messageType,
-															event.id, false);
-												});
-												sheepMap.fitBounds();
-											} else {
-												$('#sheep-page .alert').show();
-											}
-										}
-									});
-						}
-					});
+// Sheep Table Toolbar
+function initSheepToolbar() {
+	$('#add-sheep-form').ajaxForm({
+		beforeSubmit: showRequest,
+		success: function() {
+			$.pnotify({
+				text: 'Sheep was successfully added.',
+				type: 'success',
+			});
+			$('#add-sheep-modal').modal('hide');
+			$(this).clearForm();
+			// TODO add sheep to table
+		},
+		error: function() {
+			$.pnotify({
+				text : 'Could not store sheep data.',
+				type : 'error',
+			});
+		}
+	});
 
-	var sheepTable = $("#sheep-list").dataTable({
+	$('.edit-sheep-button').click(function(e) {
+		jsRoutes.controllers.Sheep.show(sheepTable.selectedId).ajax({
+			dataType: 'json',
+			success: function(sheep) {
+				var form = $('#edit-sheep-form');
+				form.attr("action", jsRoutes.controllers.Sheep.update(sheep.id).url);
+				form.attr("method", jsRoutes.controllers.Sheep.update(sheep.id).method);
+				form.find('input[name="sheepId"]').val(sheep.sheepId);
+				form.find('input[name="rfid"]').val(sheep.rfid);
+				form.find('input[name="name"]').val(sheep.name);
+				form.find('input[name="birthWeight"]').val(sheep.birthWeight);
+				form.find('input[name="dateOfBirth"]').val(sheep.dateOfBirth);
+				form.find('input[name="notes"]').val(sheep.notes);
+			},
+			error: function(data) {
+				$.pnotify({
+					text : 'Could not load sheep data.',
+					type: 'error',
+				});
+			}
+		});
+
+	});
+
+	$('#edit-sheep-form').ajaxForm({
+		beforeSubmit: showRequest,
+		success: function() {
+			$.pnotify({
+				text: 'Sheep was successfully updated.',
+				type: 'success',
+			});
+		},
+		error: function() {
+			$.pnotify({
+				text : 'Could not update sheep data',
+				type: 'error',
+			});
+		}
+	});
+
+	$('.delete-sheep-button').on('click', function(e) {
+		var id = getSelectedId();
+		var sheepId = getSelectedSheepId();
+		jsRoutes.controllers.Sheep.delete(id).ajax({
+			dataType: 'json',
+			success: function(data) {
+				$.pnotify({
+					text: 'Sheep was successfully deleted',
+					type: 'success',
+				});
+				sheepTable.fnDeleteRow(getSelectedRow().get(0));
+				disableTableToolbar();
+				clearSheepDetails();
+				eventTable.fnDeleteRows(sheepId, 'sheepId');
+			},
+			error : function() {
+				$.pnotify({
+					text : 'Could not delete sheep.',
+					type : 'error'
+				});
+			}
+		});
+	});
+}
+
+function getSelectedRow() {
+	var row = sheepTable.$('tr.row-selected');
+	return row;
+}
+
+function getSelectedId() {
+	var row = sheepTable.$('tr.row-selected');
+	var id = sheepTable.fnGetData(row.get(0), 0);
+	return id;
+}
+
+function getSelectedSheepId() {
+	var row = sheepTable.$('tr.row-selected');
+	var id = sheepTable.fnGetData(row.get(0), 1);
+	return id;
+}
+
+function initSheepTable() {
+	// Sheep table selection
+	$("#sheep-table tbody").on('click', 'tr', function(e) {
+		if ($(this).hasClass('row-selected')) {
+			$(this).removeClass('row-selected');
+			disableTableToolbar();
+			sheepTable.selectedId = null;
+		} else {
+			sheepTable.selectedId = sheepTable.fnGetData(this, 0);
+			sheepTable.$('tr.row-selected').removeClass('row-selected');
+			$(this).addClass('row-selected');
+			enableTableToolbar();
+
+			var id = sheepTable.fnGetData(this, 0)
+
+			var sheepId = sheepTable.fnGetData(this, 1);
+			showSheep(id);
+			jsRoutes.controllers.Event.listBySheep(id).ajax({
+				dataType : 'json',
+				success : function(data) {
+					sheepMap.clearMarkers();
+					eventTable.fnFilter(sheepId, 1);
+					if (data.data.length) {
+						$('#sheep-page .alert').hide();
+						$.each(data.data, function(k, event) {
+							sheepMap.addMarker(
+									event.latitude,
+									event.longitude,
+									event.messageType,
+									event.id, false);
+						});
+						sheepMap.fitBounds();
+					} else {
+						$.pnotify({
+							text: "We could not find any events registered on this entity.",
+						});
+					}
+				},
+				error: function() {
+					$.pnotify({
+						text : 'We could not load the events',
+						type : 'error',
+					});
+				}
+			});
+		}
+	});
+
+	sheepTable = $("#sheep-table").dataTable({
 		"bProcessing" : true,
+		"bStateSave" : true,
 		"sAjaxDataProp" : "data",
 		"sPaginationType" : "bootstrap",
 		"sAjaxSource" : jsRoutes.controllers.Sheep.list().absoluteURL(),
-		// "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+		// "sDom": "<'row'<'span3'l><'#sheep-table-toolbar-tmp
+		// span3'><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
 		"aoColumns" : [ {
 			"mData" : "id",
 			"bVisible" : false,
@@ -216,39 +228,35 @@ function initSheepList() {
 		}, {
 			"mData" : "dateOfBirth"
 		} ]
-	});
+	}).fnSetFilteringDelay();
 
-};
+	$('#sheep-table_length').before($('#sheep-table-toolbar'));
+
+}
 
 function initEventList() {
-	$("#event-list tbody")
-			.on(
-					'click',
-					'tr',
-					function(e) {
-						if ($(this).hasClass('row-selected')) {
-							$(this).removeClass('row-selected');
-						} else {
-							eventTable.$('tr.row-selected').removeClass(
-									'row-selected');
-							$(this).addClass('row-selected');
-							var id = eventTable.fnGetData(this, 0)
-							showSheep(id);
-							jsRoutes.controllers.Event.show(id).ajax(
-									{
-										dataType : 'json',
-										success : function(data) {
-											showEventDetails(data);
-											eventMap.addMarker(data.latitude,
-													data.longitude,
-													data.messageType,
-													data.id, true);
-										}
-									});
-						}
-					});
+	$("#event-list tbody").on('click', 'tr', function(e) {
+		if ($(this).hasClass('row-selected')) {
+			$(this).removeClass('row-selected');
+		} else {
+			eventTable.$('tr.row-selected').removeClass('row-selected');
+			$(this).addClass('row-selected');
+			var id = eventTable.fnGetData(this, 0)
+			showSheep(id);
+			jsRoutes.controllers.Event.show(id).ajax({
+				dataType : 'json',
+				success : function(data) {
+					showEventDetails(data);
+					sheepMap.addMarker(data.latitude,
+							data.longitude,
+							data.messageType,
+							data.id, true);
+				}
+			});
+		}
+	});
 
-	var eventTable = $("#event-list").dataTable({
+	eventTable = $("#event-list").dataTable({
 		"bProcessing" : true,
 		"sAjaxDataProp" : "data",
 		"sPaginationType" : "bootstrap",
@@ -268,8 +276,8 @@ function initEventList() {
 		}, {
 			"mData" : "temperature"
 		} ]
-	});
-};
+	}).fnSetFilteringDelay();
+}
 
 function showRequest(formData, jqForm, options) {
 	console.log($(this));
@@ -283,42 +291,49 @@ function showResponse(responseText, statusText, xhr, $form) {
 }
 
 function initButtons() {
-	var addSheepOptions = {
-		beforeSubmit : showRequest,
-		success : showResponse,
-	};
-	
-	$('#add-sheep-form').ajaxForm(addSheepOptions);
-	
+
 	$('.contact-form').ajaxForm({
 		beforeSubmit: showRequest,
-		success: showResponse
+		success: function() {
+			$.pnotify({
+				text : 'Contact was successfully updated',
+				type : 'success'
+			});
+			// TODO add id and set up delete/edit buttons
+		},
+		error: function() {
+			$.pnotify({
+				text : 'Could not store contact data.',
+				type : 'error'
+			});
+		}
 	});
-	
+
 	$('.contact-form-delete').on('click', function(e) {
 		var id = $(this).attr("data-contact-id");
 		jsRoutes.controllers.Contact.delete(id).ajax({
 			success: function(data) {
-				var alert = showInfo("Contact was successfully deleted.");
-				var form = $('#contact-form-'+id);
-				form.hide("fast", function(e) {
-					form.replaceWith(alert);
-					alert.show("fast");
+				$('#contact-form-'+id).hide("fast", function() { $(this).remove() });
+				$.pnotify({
+					text: "Contact was successfully deleted.",
+					type : "success"
+				});
+			},
+			error : function() {
+				$.pnotify({
+					text : 'Could not delete contact.',
+					type : 'error'
 				});
 			}
 		});
 	});
-	
+
 	$('#new-contact-button').on('click', function(e) {
 		var form = $('#new-contact-form').clone(true, true);
 		$('#contact-forms').append(form);
 		form.show('slow');
 	});
-	
-}
 
-function showInfo(msg) {
-	return $('<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert">×</button><strong>Information!</strong> ' + msg + '</div>"');
 }
 
 function showSheep(id) {
@@ -381,47 +396,53 @@ function init() {
 		showEvent(id);
 	});
 
-	$('#event-details #sheep-link').on('click', function(e) {
-		e.preventDefault();
-		var id = $(this).attr('data-sheep-id');
-		showSheep(id);
-	});
-
 	$('#details-col .collapse').collapse({
 		parent : '#details-col',
 		toggle : false
 	});
-	
-	$('#delete-sheep').on('click', function(e) {
-		var id = $(this).attr('data-sheep-id');
-		console.log(id);
-		jsRoutes.controllers.Sheep.delete(id).ajax({
-			dataType: 'json',
-			success: function(data) {
-				console.log(data);
-				clearSheepDetails();
+
+	$.pnotify.defaults.history = false;
+	$.pnotify.defaults.delay = 5000;
+	checkNewEvents();
+}
+
+var newEventInterval = window.setInterval('checkNewEvents()', 30000);
+var lastId;
+
+var checkNewEvents= function() {
+	jsRoutes.controllers.Event.alarmList(1).ajax({
+		dataType: 'json',
+		success: function(data) {
+			console.log(lastId);
+			console.log(data);
+			if (data.id != lastId) {
+				$.pnotify({
+					title : "New alarm!",
+					text : "A new alarm has been registered and the tables have been updated.",
+					type : "info",
+					hide : false
+				});
+				lastId = data.id;
 			}
-		});
+		}
 	});
-	
 }
 
 var recentAlarmsInterval = window.setInterval('recentAlarmsCall()', 30000);
 var recentAlarmsCall = function() {
-	jsRoutes.controllers.Event.alarmList(5).ajax(
-			{
-				dataType : 'json',
-				success : function(data) {
-					var html = "<ul>";
-					$.each(data, function(k, v) {
-						html = html + '<li><a href="#" data-event-id=' + v.id
-								+ '>ID ' + v.sheepId + ' (' + v.timeSent
-								+ ')</a></li>';
-					});
-					var recentAlarms = $('#recent-alarms .accordion-inner')
-							.html(html);
-				}
+	jsRoutes.controllers.Event.alarmList(5).ajax({
+		dataType : 'json',
+		success : function(data) {
+			var html = "<ul>";
+			$.each(data, function(k, v) {
+				html = html + '<li><a href="#" data-event-id=' + v.id
+				+ '>ID ' + v.sheepId + ' (' + v.timeSent
+				+ ')</a></li>';
 			});
+			var recentAlarms = $('#recent-alarms .accordion-inner')
+			.html(html);
+		}
+	});
 }
 
 /* API method to get paging information */
@@ -434,112 +455,112 @@ $.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings) {
 		"iFilteredTotal" : oSettings.fnRecordsDisplay(),
 		"iPage" : Math.ceil(oSettings._iDisplayStart
 				/ oSettings._iDisplayLength),
-		"iTotalPages" : Math.ceil(oSettings.fnRecordsDisplay()
-				/ oSettings._iDisplayLength)
+				"iTotalPages" : Math.ceil(oSettings.fnRecordsDisplay()
+						/ oSettings._iDisplayLength)
 	};
 }
 
 /* Bootstrap style pagination control */
 $
-		.extend(
-				$.fn.dataTableExt.oPagination,
-				{
-					"bootstrap" : {
-						"fnInit" : function(oSettings, nPaging, fnDraw) {
-							var oLang = oSettings.oLanguage.oPaginate;
-							var fnClickHandler = function(e) {
-								e.preventDefault();
-								if (oSettings.oApi._fnPageChange(oSettings,
-										e.data.action)) {
-									fnDraw(oSettings);
-								}
-							};
+.extend(
+		$.fn.dataTableExt.oPagination,
+		{
+			"bootstrap" : {
+				"fnInit" : function(oSettings, nPaging, fnDraw) {
+					var oLang = oSettings.oLanguage.oPaginate;
+					var fnClickHandler = function(e) {
+						e.preventDefault();
+						if (oSettings.oApi._fnPageChange(oSettings,
+								e.data.action)) {
+							fnDraw(oSettings);
+						}
+					};
 
-							$(nPaging)
-									.addClass('pagination')
-									.append(
-											'<ul>'
-													+ '<li class="prev disabled"><a href="#">&larr; '
-													+ oLang.sPrevious
-													+ '</a></li>'
-													+ '<li class="next disabled"><a href="#">'
-													+ oLang.sNext
-													+ ' &rarr; </a></li>'
-													+ '</ul>');
-							var els = $('a', nPaging);
-							$(els[0]).bind('click.DT', {
-								action : "previous"
-							}, fnClickHandler);
-							$(els[1]).bind('click.DT', {
-								action : "next"
-							}, fnClickHandler);
-						},
+					$(nPaging)
+					.addClass('pagination')
+					.append(
+							'<ul>'
+							+ '<li class="prev disabled"><a href="#">&larr; '
+							+ oLang.sPrevious
+							+ '</a></li>'
+							+ '<li class="next disabled"><a href="#">'
+							+ oLang.sNext
+							+ ' &rarr; </a></li>'
+							+ '</ul>');
+					var els = $('a', nPaging);
+					$(els[0]).bind('click.DT', {
+						action : "previous"
+					}, fnClickHandler);
+					$(els[1]).bind('click.DT', {
+						action : "next"
+					}, fnClickHandler);
+				},
 
-						"fnUpdate" : function(oSettings, fnDraw) {
-							var iListLength = 5;
-							var oPaging = oSettings.oInstance.fnPagingInfo();
-							var an = oSettings.aanFeatures.p;
-							var i, j, sClass, iStart, iEnd, iHalf = Math
-									.floor(iListLength / 2);
+				"fnUpdate" : function(oSettings, fnDraw) {
+					var iListLength = 5;
+					var oPaging = oSettings.oInstance.fnPagingInfo();
+					var an = oSettings.aanFeatures.p;
+					var i, j, sClass, iStart, iEnd, iHalf = Math
+					.floor(iListLength / 2);
 
-							if (oPaging.iTotalPages < iListLength) {
-								iStart = 1;
-								iEnd = oPaging.iTotalPages;
-							} else if (oPaging.iPage <= iHalf) {
-								iStart = 1;
-								iEnd = iListLength;
-							} else if (oPaging.iPage >= (oPaging.iTotalPages - iHalf)) {
-								iStart = oPaging.iTotalPages - iListLength + 1;
-								iEnd = oPaging.iTotalPages;
-							} else {
-								iStart = oPaging.iPage - iHalf + 1;
-								iEnd = iStart + iListLength - 1;
-							}
+					if (oPaging.iTotalPages < iListLength) {
+						iStart = 1;
+						iEnd = oPaging.iTotalPages;
+					} else if (oPaging.iPage <= iHalf) {
+						iStart = 1;
+						iEnd = iListLength;
+					} else if (oPaging.iPage >= (oPaging.iTotalPages - iHalf)) {
+						iStart = oPaging.iTotalPages - iListLength + 1;
+						iEnd = oPaging.iTotalPages;
+					} else {
+						iStart = oPaging.iPage - iHalf + 1;
+						iEnd = iStart + iListLength - 1;
+					}
 
-							for (i = 0, iLen = an.length; i < iLen; i++) {
-								// Remove the middle elements
-								$('li:gt(0)', an[i]).filter(':not(:last)')
-										.remove();
+					for (i = 0, iLen = an.length; i < iLen; i++) {
+						// Remove the middle elements
+						$('li:gt(0)', an[i]).filter(':not(:last)')
+						.remove();
 
-								// Add the new list items and their event
-								// handlers
-								for (j = iStart; j <= iEnd; j++) {
-									sClass = (j == oPaging.iPage + 1) ? 'class="active"'
-											: '';
-									$(
-											'<li ' + sClass + '><a href="#">'
-													+ j + '</a></li>')
-											.insertBefore(
-													$('li:last', an[i])[0])
+						// Add the new list items and their event
+						// handlers
+						for (j = iStart; j <= iEnd; j++) {
+							sClass = (j == oPaging.iPage + 1) ? 'class="active"'
+									: '';
+							$(
+									'<li ' + sClass + '><a href="#">'
+									+ j + '</a></li>')
+									.insertBefore(
+											$('li:last', an[i])[0])
 											.bind(
 													'click',
 													function(e) {
 														e.preventDefault();
 														oSettings._iDisplayStart = (parseInt(
 																$('a', this)
-																		.text(),
+																.text(),
 																10) - 1)
 																* oPaging.iLength;
 														fnDraw(oSettings);
 													});
-								}
+						}
 
-								// Add / remove disabled classes from the static
-								// elements
-								if (oPaging.iPage === 0) {
-									$('li:first', an[i]).addClass('disabled');
-								} else {
-									$('li:first', an[i])
-											.removeClass('disabled');
-								}
+						// Add / remove disabled classes from the static
+						// elements
+						if (oPaging.iPage === 0) {
+							$('li:first', an[i]).addClass('disabled');
+						} else {
+							$('li:first', an[i])
+							.removeClass('disabled');
+						}
 
-								if (oPaging.iPage === oPaging.iTotalPages - 1
-										|| oPaging.iTotalPages === 0) {
-									$('li:last', an[i]).addClass('disabled');
-								} else {
-									$('li:last', an[i]).removeClass('disabled');
-								}
-							}
+						if (oPaging.iPage === oPaging.iTotalPages - 1
+								|| oPaging.iTotalPages === 0) {
+							$('li:last', an[i]).addClass('disabled');
+						} else {
+							$('li:last', an[i]).removeClass('disabled');
 						}
 					}
-				});
+				}
+			}
+		});

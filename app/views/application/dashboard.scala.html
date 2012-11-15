@@ -2,58 +2,7 @@
 
 <!-- /navbar -->
 
-<!--  Modals -->
 
-<div id="add-sheep-modal" class="modal hide fade" tabindex="-1"
-	role="dialog" aria-laballedby="add-sheep-label" aria-hidden="true">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal"
-			aria-hidden="true">&times</button>
-		<h3 id="add-sheep-label">Add new sheep</h3>
-	</div>
-	<div class="modal-body">
-		@helper.form(action = routes.Sheep.add(), 'class -> "form-horizontal",
-		'id -> "add-sheep-form") {
-		<div class="control-group">
-			<label class="control-label" for="sheepId">Sheep ID</label>
-			<div class="controls">
-				<input name="sheepId" type="number" placeholder="Sheep ID" required
-					autofocus>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label" for="rfid">RFID</label>
-			<div class="controls">
-				<input name="rfid" type="number" placeholder="RFID" required>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label" for="name">Sheep name</label>
-			<div class="controls">
-				<input name="name" type="text" placeholder="Sheep name">
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label" for="dateOfBirth">Birth</label>
-			<div class="controls">
-				<input name="dateOfBirth" type="date" placeholder="Sheep name">
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label" for="birthWeight">Weight</label>
-			<div class="controls">
-				<input name="birthWeight" type="number" placeholder="Weight">
-			</div>
-		</div>
-		}
-	</div>
-	<div class="modal-footer">
-		<input type="button" class="btn" data-dismiss="modal"
-			aria-hidden="true" form="add-sheep-form" value="Cancel"> <input
-			type="submit" class="btn btn-primary" form="add-sheep-form"
-			value="Save">
-	</div>
-</div>
 
 <div class="span6">
 	<div class="tabbable">

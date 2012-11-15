@@ -41,5 +41,9 @@ public class Contact extends Model {
 	public static List<Contact> findByProducerId(Long producerId) {
 		return find.where().eq("producerId", producerId).findList();
 	}
+	
+	public static boolean isOwner(Long contactId, String producerId) {
+		return find.where().eq("id", contactId).eq("producer.producerId", producerId).findRowCount() > 0;
+	}
 
 }

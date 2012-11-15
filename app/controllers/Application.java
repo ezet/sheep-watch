@@ -90,6 +90,8 @@ public class Application extends Controller {
 		return ok(Routes.javascriptRouter("jsRoutes",
 
 				// Routes for Sheep
+				controllers.routes.javascript.Sheep.add(),
+				controllers.routes.javascript.Sheep.update(),
 				controllers.routes.javascript.Sheep.list(),
 				controllers.routes.javascript.Sheep.delete(),
 				controllers.routes.javascript.Sheep.show(),

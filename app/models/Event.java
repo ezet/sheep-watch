@@ -77,5 +77,9 @@ public class Event extends Model {
 	public static List<Event> findByRfid(long id) {
 		return find.where().eq("rfid", id).findList();
 	}
+	
+	public static boolean isOwner(Long eventId, String producerId) {
+		return find.where().eq("id", eventId).eq("sheep.producerId", Long.valueOf(producerId)).findRowCount() > 0;
+	}
 
 }

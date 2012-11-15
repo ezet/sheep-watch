@@ -7,16 +7,17 @@ body {
 	width: 550px;
 }
 
-.alert {
-	display: none;
-})
-
 #map-settings {
 }
 
 #sheep-map, #event-map {
-	height: 300px;
-	margin: 20px;
+	width: 100%;
+	height: 30em;
+	margin-bottom: 20px;
+}
+
+#sheep-table-toolbar {
+	margin-right: 20px;
 }
 
 .accordion-group {
