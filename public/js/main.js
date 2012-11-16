@@ -6,12 +6,9 @@ $(document).ready(function() {
 	initSheepTable();
 	initEventList();
 	recentAlarmsCall();
-	sheepMap.init();
 });
 
-var map = new gmap("map-canvas");
-
-var sheepMap = new gmap("sheep-map");
+var mainMap = new gmap("map-canvas");
 
 function showAllAlarms() {
 	jsRoutes.controllers.Event.alarmList(5).ajax({
@@ -30,8 +27,7 @@ function showAllAlarms() {
 
 function initMap() {
 	if ($('#map-canvas').length) {
-		map.init();
-		showAllAlarms();
+		mainMap.init();
 	}
 }
 
@@ -44,16 +40,6 @@ function enableTableToolbar() {
 	$('.edit-sheep-button').removeClass('disabled');
 	$('.delete-sheep-button').removeClass('disabled');
 }
-
-$.extend($.fn.dataTableExt.oStdClasses, {
-	"sSortAsc" : "header headerSortDown",
-	"sSortDesc" : "header headerSortUp",
-	"sSortable" : "header"
-});
-
-$.extend($.fn.dataTableExt.oStdClasses, {
-	"sWrapper" : "dataTables_wrapper form-inline"
-});
 
 // Sheep Table Toolbar
 function initSheepToolbar() {
@@ -174,22 +160,18 @@ function initSheepTable() {
 			var id = sheepTable.fnGetData(this, 0)
 
 			var sheepId = sheepTable.fnGetData(this, 1);
-			showSheep(id);
+			fetchAndDisplaySheep(id);
 			jsRoutes.controllers.Event.listBySheep(id).ajax({
 				dataType : 'json',
 				success : function(data) {
-					sheepMap.clearMarkers();
+					mainMap.clearMarkers();
 					eventTable.fnFilter(sheepId, 1);
 					if (data.data.length) {
 						$('#sheep-page .alert').hide();
 						$.each(data.data, function(k, event) {
-							sheepMap.addMarker(
-									event.latitude,
-									event.longitude,
-									event.messageType,
-									event.id, false);
+							var marker = mainMap.addEventMarker(event);
 						});
-						sheepMap.fitBounds();
+						mainMap.fitBounds();
 					} else {
 						$.pnotify({
 							text: "We could not find any events registered on this entity.",
@@ -207,13 +189,12 @@ function initSheepTable() {
 	});
 
 	sheepTable = $("#sheep-table").dataTable({
+		"sDom": 'lfrtip',
+		"bJQueryUI": true,
 		"bProcessing" : true,
-		"bStateSave" : true,
+		"sPaginationType": "full_numbers",
 		"sAjaxDataProp" : "data",
-		"sPaginationType" : "bootstrap",
 		"sAjaxSource" : jsRoutes.controllers.Sheep.list().absoluteURL(),
-		// "sDom": "<'row'<'span3'l><'#sheep-table-toolbar-tmp
-		// span3'><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
 		"aoColumns" : [ {
 			"mData" : "id",
 			"bVisible" : false,
@@ -230,7 +211,7 @@ function initSheepTable() {
 		} ]
 	}).fnSetFilteringDelay();
 
-	$('#sheep-table_length').before($('#sheep-table-toolbar'));
+//	$('#sheep-table_length').before($('#sheep-table-toolbar'));
 
 }
 
@@ -242,26 +223,26 @@ function initEventList() {
 			eventTable.$('tr.row-selected').removeClass('row-selected');
 			$(this).addClass('row-selected');
 			var id = eventTable.fnGetData(this, 0)
-			showSheep(id);
+			fetchAndDisplaySheep(id);
 			jsRoutes.controllers.Event.show(id).ajax({
 				dataType : 'json',
 				success : function(data) {
-					showEventDetails(data);
-					sheepMap.addMarker(data.latitude,
-							data.longitude,
-							data.messageType,
-							data.id, true);
+					displayEvent(data);
+					mainMap.clearMarkers();
+					var marker = mainMap.addEventMarker(data);
+					mainMap.center(marker);
 				}
 			});
 		}
 	});
 
 	eventTable = $("#event-list").dataTable({
+		"sDom": 'lfrtip',
+		"bJQueryUI": true,
 		"bProcessing" : true,
+		"sPaginationType": "full_numbers",
 		"sAjaxDataProp" : "data",
-		"sPaginationType" : "bootstrap",
 		"sAjaxSource" : jsRoutes.controllers.Event.list().absoluteURL(),
-		// "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
 		"aoColumns" : [ {
 			"mData" : "id",
 			"bVisible" : false,
@@ -336,14 +317,14 @@ function initButtons() {
 
 }
 
-function showSheep(id) {
+function fetchAndDisplaySheep(id) {
 	jsRoutes.controllers.Sheep.show(id).ajax({
 		dataType : 'json',
-		success : showSheepDetails
+		success : displaySheep
 	});
 }
 
-function showSheepDetails(data) {
+function displaySheep(data) {
 	var sheep = $('#sheep-details');
 	sheep.find('#sheep-id').text(data.sheepId);
 	sheep.find('#delete-sheep').attr("data-sheep-id", data.id);
@@ -369,52 +350,43 @@ function clearSheepDetails() {
 	sheep.find('.btn').addClass('disabled');
 }
 
-function showEvent(id) {
+function fetchAndDisplayEvent(id) {
 	jsRoutes.controllers.Event.show(id).ajax({
 		dataType : 'json',
-		success : showEventDetails
+		success : displayEvent
 	});
 }
 
-function showEventDetails(data) {
+function displayEvent(data) {
 	var events = $('#event-details');
-	events.find('#sheep-link').attr('data-sheep-id', data.sheepId);
-	events.find('#event-type').text(data.messageType);
-	events.find('#event-id').text(data.sheepId);
-	events.find('#event-rfid').text(data.rfid);
-	events.find('#event-time').text(data.timeSent);
-	events.find('#event-temp').text(data.temperature);
-	events.find('#event-pulse').text(data.pulse);
-	events.find('#event-lat').text(data.latitude);
-	events.find('#event-long').text(data.longitude);
+	events.find('.event-type').text(data.messageType);
+	events.find('.event-id').text(data.sheepId);
+	events.find('.event-rfid').text(data.rfid);
+	events.find('.event-time').text(data.timeSent);
+	events.find('.event-temp').text(data.temperature);
+	events.find('.event-pulse').text(data.pulse);
+	events.find('.event-lat').text(data.latitude);
+	events.find('.event-long').text(data.longitude);
 }
 
 function init() {
 	$('#recent-alarms').on('click', 'a', function(e) {
 		e.preventDefault();
 		var id = $(this).attr('data-event-id');
-		showEvent(id);
+		fetchAndDisplayEvent(id);
 	});
 
-	$('#details-col .collapse').collapse({
-		parent : '#details-col',
-		toggle : false
-	});
-
-	$.pnotify.defaults.history = false;
 	$.pnotify.defaults.delay = 5000;
 	checkNewEvents();
 }
 
-var newEventInterval = window.setInterval('checkNewEvents()', 30000);
+var newEventInterval = window.setInterval('checkNewEvents', 30000);
 var lastId;
 
-var checkNewEvents= function() {
+var checkNewEvents = function() {
 	jsRoutes.controllers.Event.alarmList(1).ajax({
 		dataType: 'json',
 		success: function(data) {
-			console.log(lastId);
-			console.log(data);
 			if (data.id != lastId) {
 				$.pnotify({
 					title : "New alarm!",
@@ -444,123 +416,3 @@ var recentAlarmsCall = function() {
 		}
 	});
 }
-
-/* API method to get paging information */
-$.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings) {
-	return {
-		"iStart" : oSettings._iDisplayStart,
-		"iEnd" : oSettings.fnDisplayEnd(),
-		"iLength" : oSettings._iDisplayLength,
-		"iTotal" : oSettings.fnRecordsTotal(),
-		"iFilteredTotal" : oSettings.fnRecordsDisplay(),
-		"iPage" : Math.ceil(oSettings._iDisplayStart
-				/ oSettings._iDisplayLength),
-				"iTotalPages" : Math.ceil(oSettings.fnRecordsDisplay()
-						/ oSettings._iDisplayLength)
-	};
-}
-
-/* Bootstrap style pagination control */
-$
-.extend(
-		$.fn.dataTableExt.oPagination,
-		{
-			"bootstrap" : {
-				"fnInit" : function(oSettings, nPaging, fnDraw) {
-					var oLang = oSettings.oLanguage.oPaginate;
-					var fnClickHandler = function(e) {
-						e.preventDefault();
-						if (oSettings.oApi._fnPageChange(oSettings,
-								e.data.action)) {
-							fnDraw(oSettings);
-						}
-					};
-
-					$(nPaging)
-					.addClass('pagination')
-					.append(
-							'<ul>'
-							+ '<li class="prev disabled"><a href="#">&larr; '
-							+ oLang.sPrevious
-							+ '</a></li>'
-							+ '<li class="next disabled"><a href="#">'
-							+ oLang.sNext
-							+ ' &rarr; </a></li>'
-							+ '</ul>');
-					var els = $('a', nPaging);
-					$(els[0]).bind('click.DT', {
-						action : "previous"
-					}, fnClickHandler);
-					$(els[1]).bind('click.DT', {
-						action : "next"
-					}, fnClickHandler);
-				},
-
-				"fnUpdate" : function(oSettings, fnDraw) {
-					var iListLength = 5;
-					var oPaging = oSettings.oInstance.fnPagingInfo();
-					var an = oSettings.aanFeatures.p;
-					var i, j, sClass, iStart, iEnd, iHalf = Math
-					.floor(iListLength / 2);
-
-					if (oPaging.iTotalPages < iListLength) {
-						iStart = 1;
-						iEnd = oPaging.iTotalPages;
-					} else if (oPaging.iPage <= iHalf) {
-						iStart = 1;
-						iEnd = iListLength;
-					} else if (oPaging.iPage >= (oPaging.iTotalPages - iHalf)) {
-						iStart = oPaging.iTotalPages - iListLength + 1;
-						iEnd = oPaging.iTotalPages;
-					} else {
-						iStart = oPaging.iPage - iHalf + 1;
-						iEnd = iStart + iListLength - 1;
-					}
-
-					for (i = 0, iLen = an.length; i < iLen; i++) {
-						// Remove the middle elements
-						$('li:gt(0)', an[i]).filter(':not(:last)')
-						.remove();
-
-						// Add the new list items and their event
-						// handlers
-						for (j = iStart; j <= iEnd; j++) {
-							sClass = (j == oPaging.iPage + 1) ? 'class="active"'
-									: '';
-							$(
-									'<li ' + sClass + '><a href="#">'
-									+ j + '</a></li>')
-									.insertBefore(
-											$('li:last', an[i])[0])
-											.bind(
-													'click',
-													function(e) {
-														e.preventDefault();
-														oSettings._iDisplayStart = (parseInt(
-																$('a', this)
-																.text(),
-																10) - 1)
-																* oPaging.iLength;
-														fnDraw(oSettings);
-													});
-						}
-
-						// Add / remove disabled classes from the static
-						// elements
-						if (oPaging.iPage === 0) {
-							$('li:first', an[i]).addClass('disabled');
-						} else {
-							$('li:first', an[i])
-							.removeClass('disabled');
-						}
-
-						if (oPaging.iPage === oPaging.iTotalPages - 1
-								|| oPaging.iTotalPages === 0) {
-							$('li:last', an[i]).addClass('disabled');
-						} else {
-							$('li:last', an[i]).removeClass('disabled');
-						}
-					}
-				}
-			}
-		});

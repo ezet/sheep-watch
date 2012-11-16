@@ -2,32 +2,17 @@
 
 @active(link : String) = { @if(link == page) { class="active" }}
 
-<div class="navbar navbar-inverse navbar-fixed-top">
-	<div class="navbar-inner">
-		<div class="container">
-			<a class="btn btn-navbar" data-toggle="collapse"
-				data-target=".nav-collapse"> <span class="icon-bar"></span> <span
-				class="icon-bar"></span> <span class="icon-bar"></span>
-			</a> <a class="brand" href="@routes.Application.index()">Sheep Watch</a>
-			<div class="nav-collapse collapse">
-				<ul class="nav">
-					<li @active("dashboard")><a href="@routes.Application.index()">Dashboard</a></li>
-					<li @active("manage")><a href="@routes.Application.manage()">Manage</a></li>
-					<li @active("settings")><a href="@routes.Application.settings()">Settings</a></li>
+
+				<ul>
+					<li @active("home")><a href="@routes.Application.index()">Home</a></li>
+					<li @active("dashboard")><a href="@routes.Application.manage()">Dashboard</a></li>
+					<li @active("sheep")><a href="@routes.Application.manage()">Sheep</a></li>
+					<li @active("events")><a href="@routes.Application.manage()">Events</a></li>
+					<li @active("contacts")><a href="@routes.Application.settings()">Contacts</a></li>
 					<li @active("statistics")><a href="@routes.Application.statistics()">Statistics</a></li>
 					<!-- <li @active("about")><a href="@routes.Application.about()">About</a></li>-->
 					<li @active("contact")><a href="@routes.Application.contact()">Contact</a></li>
 					<li @active("help")><a href="@routes.Application.help()">Help</a></li>
 				</ul>
-				@helper.form(action = routes.Application.search("search"), 'class ->
-				"navbar-form pull-left") { <input class="span3 search-query"
-					name="search" type="text" placeholder="Search..." /> }
-				@helper.form(action = routes.Application.logout(), 'class ->
-				"navbar-form pull-right") {
-				<button type="submit" class="btn">Sign out</button>
-				}
-			</div>
-			<!--/.nav-collapse -->
-		</div>
-	</div>
-</div>
+
+

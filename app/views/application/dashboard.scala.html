@@ -1,63 +1,10 @@
-@() @layout("dashboard") {
+@() @layout("home", "Home") {
 
 <!-- /navbar -->
 
 
 
 <div class="span6">
-	<div class="tabbable">
-		<ul id="tab-nav" class="nav nav-tabs">
-			<li id="map-tab" class="active"><a href="#map-pane"
-				data-toggle="tab">Map</a></li>
-			<li id="sheep-tab"><a href="#sheep-pane" data-toggle="tab">Sheep</a></li>
-			<li id="event-tab"><a href="#event-pane" data-toggle="tab">Events</a></li>
-			<li class="pull-right"><button class="btn btn-primary"
-					data-toggle="modal" data-target="#add-sheep-modal">Add new
-					sheep</button></li>
-		</ul>
-		<div class="tab-content">
-			<div class="tab-pane active" id="map-pane">
-				<div id="map-canvas"></div>
-			</div>
-			<div class="tab-pane" id="sheep-pane">
-				<table id="sheep-list" cellpadding="0" cellspacing="0" border="0"
-					class="table table-striped table-bordered table-hover">
-
-					<thead>
-						<tr>
-							<th>InternalId</th>
-							<th>SheepId</th>
-							<th>rfid</th>
-							<th>Name</th>
-							<th>Weight</th>
-							<th>Date of birth</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
-			</div>
-			<div class="tab-pane" id="event-pane">
-				<table id="event-list" cellpadding="0" cellspacing="0" border="0"
-					class="table table-striped table-bordered">
-
-
-					<thead>
-						<tr>
-							<th>Event ID</th>
-							<th>Sheep ID</th>
-							<th>Type</th>
-							<th>Sent</th>
-							<th>Pulse</th>
-							<th>Temperature</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
 </div>
 <div class="span3">
 	<div class="accordion" id="accordion2">

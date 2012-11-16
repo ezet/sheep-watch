@@ -1,23 +1,22 @@
 body {
-	padding-top: 60px;
-}
-
-#map-canvas {
-	height: 550px;
-	width: 550px;
 }
 
 #map-settings {
 }
 
-#sheep-map, #event-map {
+#map-canvas img {
+	max-width: none;
+}
+
+#sheep-map, #event-map, #map-canvas {
 	width: 100%;
 	height: 30em;
-	margin-bottom: 20px;
 }
 
 #sheep-table-toolbar {
-	margin-right: 20px;
+	padding-right: 30px;
+	padding-top: 5px; 
+	
 }
 
 .accordion-group {
