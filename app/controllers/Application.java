@@ -39,7 +39,7 @@ public class Application extends Controller {
 
 	public static Result settings() {
 		List<Form<models.Contact>> contactForms = new ArrayList<>();
-		List<models.Contact> contacts = models.Contact.findByProducerId(Long.valueOf(session("producerId")));
+		List<models.Contact> contacts = models.Contact.findByUserId(Long.valueOf(session("userId")));
 		for (models.Contact contact : contacts) {
 			Form<models.Contact> contactForm = form("form", models.Contact.class);
 			contactForm = contactForm.fill(contact);
@@ -63,6 +63,7 @@ public class Application extends Controller {
 		} else {
 			session("username", loginForm.get().username);
 			session("producerId", String.valueOf(loginForm.get().user.producerId));
+			session("userId", String.valueOf(loginForm.get().user.id));
 			return redirect(routes.Application.app());
 		}
 	}

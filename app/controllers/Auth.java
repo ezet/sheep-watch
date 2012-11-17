@@ -7,7 +7,7 @@ public class Auth extends Security.Authenticator {
 	
     @Override
     public String getUsername(Context ctx) {
-        return ctx.session().get("producerId");
+        return ctx.session().get("userId");
     }
     
     public static boolean isOwnerOfSheep(Long sheepId) {

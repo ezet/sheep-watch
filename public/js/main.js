@@ -69,7 +69,7 @@ function initSheepToolbar() {
 				var form = $('#edit-sheep-form');
 				form.attr("action", jsRoutes.controllers.Sheep.update(sheep.id).url);
 				form.attr("method", jsRoutes.controllers.Sheep.update(sheep.id).method);
-				form.find('input[name="sheepId"]').val(sheep.sheepId);
+				form.find('input[name="sheepPid"]').val(sheep.sheepPid);
 				form.find('input[name="rfid"]').val(sheep.rfid);
 				form.find('input[name="name"]').val(sheep.name);
 				form.find('input[name="birthWeight"]').val(sheep.birthWeight);
@@ -104,7 +104,7 @@ function initSheepToolbar() {
 
 	$('.delete-sheep-button').on('click', function(e) {
 		var id = getSelectedId();
-		var sheepId = getSelectedSheepId();
+		var sheepPid = getSelectedSheepId();
 		jsRoutes.controllers.Sheep.delete(id).ajax({
 			dataType: 'json',
 			success: function(data) {
@@ -115,7 +115,7 @@ function initSheepToolbar() {
 				sheepTable.fnDeleteRow(getSelectedRow().get(0));
 				disableTableToolbar();
 				clearSheepDetails();
-				eventTable.fnDeleteRows(sheepId, 'sheepId');
+				eventTable.fnDeleteRows(sheepPid, 'sheepPid');
 			},
 			error : function() {
 				$.pnotify({
@@ -159,13 +159,13 @@ function initSheepTable() {
 
 			var id = sheepTable.fnGetData(this, 0)
 
-			var sheepId = sheepTable.fnGetData(this, 1);
+			var sheepPid = sheepTable.fnGetData(this, 1);
 			fetchAndDisplaySheep(id);
 			jsRoutes.controllers.Event.listBySheep(id).ajax({
 				dataType : 'json',
 				success : function(data) {
 					mainMap.clearMarkers();
-					eventTable.fnFilter(sheepId, 1);
+					eventTable.fnFilter(sheepPid, 1);
 					if (data.data.length) {
 						$('#sheep-page .alert').hide();
 						$.each(data.data, function(k, event) {
@@ -199,7 +199,7 @@ function initSheepTable() {
 			"mData" : "id",
 			"bVisible" : false,
 		}, {
-			"mData" : "sheepId"
+			"mData" : "sheepPid"
 		}, {
 			"mData" : "rfid"
 		}, {
@@ -247,7 +247,7 @@ function initEventList() {
 			"mData" : "id",
 			"bVisible" : false,
 		}, {
-			"mData" : "sheepId"
+			"mData" : "sheepPid"
 		}, {
 			"mData" : "messageType"
 		}, {
@@ -326,7 +326,7 @@ function fetchAndDisplaySheep(id) {
 
 function displaySheep(data) {
 	var sheep = $('#sheep-details');
-	sheep.find('#sheep-id').text(data.sheepId);
+	sheep.find('#sheep-id').text(data.sheepPid);
 	sheep.find('#delete-sheep').attr("data-sheep-id", data.id);
 	sheep.find('#edit-sheep').attr("data-sheep-id", data.id);
 	sheep.find('#sheep-rfid').text(data.rfid);
@@ -360,7 +360,7 @@ function fetchAndDisplayEvent(id) {
 function displayEvent(data) {
 	var events = $('#event-details');
 	events.find('.event-type').text(data.messageType);
-	events.find('.event-id').text(data.sheepId);
+	events.find('.event-id').text(data.sheepPid);
 	events.find('.event-rfid').text(data.rfid);
 	events.find('.event-time').text(data.timeSent);
 	events.find('.event-temp').text(data.temperature);
@@ -408,7 +408,7 @@ var recentAlarmsCall = function() {
 			var html = "<ul>";
 			$.each(data, function(k, v) {
 				html = html + '<li><a href="#" data-event-id=' + v.id
-				+ '>ID ' + v.sheepId + ' (' + v.timeSent
+				+ '>ID ' + v.sheepPid + ' (' + v.timeSent
 				+ ')</a></li>';
 			});
 			var recentAlarms = $('#recent-alarms .accordion-inner')

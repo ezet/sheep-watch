@@ -24,7 +24,7 @@ public class Contact extends Controller {
 			return badRequest(form.errorsAsJson());
 		} else {
 			models.Contact contact = form.get();
-			contact.producer = models.User.find.ref(Long.valueOf(session("producerId")));
+			contact.user = models.User.find.ref(Long.valueOf(session("producerId")));
 			try {
 				contact.save();
 				contact.refresh();

@@ -27,13 +27,17 @@ public class Sheep extends Controller {
 	static {
 		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss"));
 	}
+	
+	public static void jsonPrepare(models.Sheep sheep) {
+		sheep.events = null;
+		sheep.userId = sheep.user.id;
+		sheep.user = null;
+	}
 
 	public static Result list() {
-		List<models.Sheep> list = models.Sheep.findByProducerId(Long.valueOf(session("producerId")));
+		List<models.Sheep> list = models.Sheep.findByUserId(Long.valueOf(session("userId")));
 		for (models.Sheep sheep : list) {
-			sheep.events = null;
-			sheep.producerId = sheep.producer.id;
-			sheep.producer = null;
+			jsonPrepare(sheep);
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		ObjectNode node = mapper.createObjectNode();
@@ -49,8 +53,7 @@ public class Sheep extends Controller {
 		if (sheep == null) {
 			return notFound();
 		}
-		sheep.producer = null;
-		sheep.events = null;
+		jsonPrepare(sheep);
 		Logger.debug(sheep.toString());
 		return ok(Json.toJson(sheep));
 	}
@@ -63,12 +66,10 @@ public class Sheep extends Controller {
 			return badRequest(sheepForm.errorsAsJson());
 		} else {
 			models.Sheep sheep = sheepForm.get();
-			sheep.producer = User.find.ref(Long.valueOf(session("producerId")));
+			sheep.user = User.find.ref(Long.valueOf(session("producerId")));
 			sheep.save();
 			sheep.refresh();
-			sheep.producerId = sheep.producer.producerId;
-			sheep.producer = null;
-			sheep.events = null;
+			jsonPrepare(sheep);
 			StringWriter writer = new StringWriter();
 			try {
 				new ObjectMapper().writeValue(writer, sheep);
@@ -124,7 +125,7 @@ public class Sheep extends Controller {
 		if (event == null) {
 			return notFound();
 		}
-		event.sheepId = event.sheep.sheepId;
+		event.sheepPid = event.sheep.sheepPid;
 		event.sheep = null;
 		return ok(Json.toJson(event));
 	}

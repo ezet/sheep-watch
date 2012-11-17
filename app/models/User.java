@@ -4,52 +4,61 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.codehaus.jackson.annotate.JsonManagedReference;
+import javax.persistence.Version;
 
 import play.data.format.Formats;
 import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
+import com.avaje.ebean.annotation.CreatedTimestamp;
+
 @Entity
-@Table(name = "User")
+@Table
 public class User extends Model {
+	private static final long serialVersionUID = 1L;
 
 	@Id
-	public long id;
+	public Long id; 
 
 	@Required
-	public long producerId;
+	@Column(nullable=false, unique=true)
+	public Long producerId;
 
 	@Constraints.Required
 	@Constraints.Email
+	@Column(nullable=false, unique=true)
 	public String username;
 
 	public String name;
 
 	@Required
 	@Formats.NonEmpty
+	@Column(nullable=false)
 	public String password;
 
-	public Timestamp timeCreated;
-	public int accessLevel;
+	@CreatedTimestamp
+	public Timestamp creTime;
 	
-	@OneToMany(mappedBy="producer")
+	@Version
+	public Timestamp updTime;
+	
+	@Column(nullable=false)
+	public Integer accessLevel;
+	
+	@OneToMany(mappedBy="user", cascade=CascadeType.ALL)
 	public List<Contact> contacts = new ArrayList<>();
 	
-	@OneToMany(mappedBy="producer")
+	@OneToMany(mappedBy="user", cascade=CascadeType.ALL)
 	public List<Sheep> sheep = new ArrayList<>();
 
 	public static Model.Finder<Long, User> find = new Model.Finder<>(Long.class, User.class);
-
-	public static User create() {
-		return new User();
-	}
 
 	public static List<User> findAll() {
 		return find.all();
@@ -62,13 +71,4 @@ public class User extends Model {
 	public static User authenticate(String username, String password) {
 		return find.where().eq("username", username).eq("password", password).findUnique();
 	}
-
-	public User() {
-
-	}
-
-	public User(long id) {
-		this.id = id;
-	}
-
 }

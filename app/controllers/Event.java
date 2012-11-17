@@ -149,7 +149,7 @@ public class Event extends Controller {
 
 	public static void jsonPrepare(models.Event event) {
 		event.rfid = event.sheep.rfid;
-		event.sheepId = event.sheep.sheepId;
+		event.sheepPid = event.sheep.sheepPid;
 		event.sheep = null;
 	}
 

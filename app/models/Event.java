@@ -3,8 +3,8 @@ package models;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,27 +15,33 @@ import play.data.format.Formats;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
+import com.avaje.ebean.annotation.CreatedTimestamp;
+
 @Entity
-@Table(name = "Event")
+@Table
 public class Event extends Model {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public enum MessageType {
 		UPDATE, ALARM, EXCEPTION
 	};
 
 	@Id
-	@GeneratedValue
 	public long id;
 	
 	@Transient
-	public long sheepId;
+	public Long sheepPid;
 	
-	@Transient
+	@Column(nullable=false)
 	public long rfid;
 	
-	@ManyToOne
-	@JoinColumn(name="rfid")
 	@Required
+	@ManyToOne(optional=false)
+	@JoinColumn(name="sheep_id", referencedColumnName="id", nullable=false)
 	public Sheep sheep;
 
 	public MessageType messageType;
@@ -43,6 +49,7 @@ public class Event extends Model {
 	@Formats.DateTime(pattern="yyyy-MM-dd hh:mm:ss")
 	public Date timeSent;
 	
+	@CreatedTimestamp
 	@Formats.DateTime(pattern="yyyy-MM-dd hh:mm:ss")
 	public Date timeReceived;
 	
@@ -54,32 +61,32 @@ public class Event extends Model {
 
 	public static Model.Finder<Long, Event> find = new Model.Finder<Long, Event>(Long.class, Event.class);
 
-	public static List<Event> findByProducerId(long id, int num) {
-		return find.where().eq("sheep.producer.producerId", id).orderBy("timeSent").setMaxRows(num).findList();
+	public static List<Event> findByProducerId(Long producerId, int num) {
+		return find.where().eq("sheep.user.producerId", producerId).orderBy("timeSent").setMaxRows(num).findList();
 	}
 	
 	public static List<Event> findTypeByProducerId(long producerId, MessageType type, int num) {
-		return find.where().eq("sheep.producer.producerId", producerId).eq("messageType", type).orderBy("timeSent").setMaxRows(num).findList();
+		return find.where().eq("sheep.user.producerId", producerId).eq("messageType", type).orderBy("timeSent").setMaxRows(num).findList();
 	}
 	
 	public static List<Event> findLatestEvents(long producerId) {
-		return find.where().eq("sheep.producer.producerId", producerId).orderBy("timeSent").findList();
+		return find.where().eq("sheep.user.producerId", producerId).orderBy("timeSent").findList();
 	}
 	
 	public static Event findLatestEvent(long sheepId) {
-		return find.where().eq("sheep.sheepId", sheepId).orderBy("timeSent").setMaxRows(1).findUnique();
+		return find.where().eq("sheep.sheepPid", sheepId).orderBy("timeSent").setMaxRows(1).findUnique();
 	}
 	
-	public static List<Event> findBySheepId(long id) {
-		return find.where().eq("sheep.sheepId", id).orderBy("timeSent").findList();
+	public static List<Event> findBySheepId(Long id) {
+		return find.where().eq("sheep.id", id).orderBy("timeSent").findList();
 	}
 
 	public static List<Event> findByRfid(long id) {
 		return find.where().eq("rfid", id).findList();
 	}
 	
-	public static boolean isOwner(Long eventId, String producerId) {
-		return find.where().eq("id", eventId).eq("sheep.producerId", Long.valueOf(producerId)).findRowCount() > 0;
+	public static boolean isOwner(Long eventId, String userId) {
+		return find.where().eq("id", eventId).eq("sheep.user.id", userId).findRowCount() > 0;
 	}
 
 }
