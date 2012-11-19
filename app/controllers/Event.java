@@ -25,19 +25,37 @@ public class Event extends Controller {
 	static {
 		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss"));
 	}
-
-	public static Result index() {
-		return TODO;
-	}
-	
 	public static Result list() {
-		List<models.Event> events = models.Event.findByProducerId(Long.valueOf(session("producerId")), 10);
+		List<models.Event> events = models.Event.findByProducerId(Long.valueOf(session("producerId")), Integer.MAX_VALUE - 1);
 		for (models.Event event : events) {
 			jsonPrepare(event);
 		}
 		ObjectNode node = mapper.createObjectNode();
 		StringWriter writer = new StringWriter();
 
+		try {
+			mapper.writeValue(writer, events);
+			node.put("data", mapper.readTree(writer.toString()));
+		} catch (JsonGenerationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ok(node);
+	}
+	
+	public static Result listLimit(Integer num) {
+		List<models.Event> events = models.Event.findByProducerId(Long.valueOf(session("producerId")), num);
+		for (models.Event event : events) {
+			jsonPrepare(event);
+		}
+		ObjectNode node = mapper.createObjectNode();
+		StringWriter writer = new StringWriter();
 		try {
 			mapper.writeValue(writer, events);
 			node.put("data", mapper.readTree(writer.toString()));
@@ -122,34 +140,10 @@ public class Event extends Controller {
 		return ok(node);
 	}
 
-	public static Result updateList(Integer num) {
-		List<models.Event> events = models.Event.findTypeByProducerId(Long.valueOf(session("producerId")), MessageType.ALARM, num);
-		for (models.Event event : events) {
-			jsonPrepare(event);
-		}
-		StringWriter writer = new StringWriter();
-		try {
-			mapper.writeValue(writer, events);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ok(writer.toString());
-	}
-
-	@BodyParser.Of(BodyParser.Json.class)
-	public static Result recentAlarms(Integer num) {
-		return TODO;
-
-	}
-
-	public static Result recentExceptions(Integer num) {
-		return TODO;
-	}
-
 	public static void jsonPrepare(models.Event event) {
 		event.rfid = event.sheep.rfid;
 		event.sheepPid = event.sheep.sheepPid;
+		event.sheepId = event.sheep.id;
 		event.sheep = null;
 	}
 

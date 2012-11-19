@@ -79,6 +79,8 @@ function gmap(selector) {
 			bounds.extend(v.getPosition());
 		});
 		this.map.fitBounds(bounds);
+		if (this.map.getZoom() > this.defaultZoom)
+			this.map.setZoom(this.defaultZoom);
 	}
 
 	this.clearMarkers = function() {

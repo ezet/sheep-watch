@@ -9,7 +9,7 @@ GET     /                           controllers.Application.index()
 GET		/app						controllers.Application.app()
 GET		/manage						controllers.Application.manage()
 GET		/statistics					controllers.Application.statistics()
-GET		/settings					controllers.Application.settings()
+GET		/contacts					controllers.Application.contacts()
 GET		/search/:term				controllers.Application.search(term: String)
 GET		/help						controllers.Application.help()
 GET 	/about						controllers.Application.about()
@@ -21,7 +21,6 @@ POST	/login						controllers.Application.authenticate()
 GET		/logout 					controllers.Application.logout()
 
 # Sheep
-
 GET 	/sheep/all					controllers.Sheep.list()
 GET 	/sheep/:id					controllers.Sheep.show(id: Long)
 GET		/sheep/:id/position			controllers.Sheep.position(id: Long)
@@ -32,11 +31,10 @@ DELETE	/sheep/:id					controllers.Sheep.delete(id: Long)
 
 # Events
 GET 	/events/all					controllers.Event.list()
+GET		/events/list/:num			controllers.Event.listLimit(num: Integer)
 GET		/events/:id					controllers.Event.show(id: Long)
-GET		/alarms 					controllers.Event.alarmList(num: Integer ?= 0)
+GET		/alarms/all					controllers.Event.alarmList(num: Integer ?= 0)
 GET		/alarms/:num				controllers.Event.alarmList(num: Integer)
-GET 	/updates/:num	   			controllers.Event.updateList(num: Integer)
-GET		/events/exceptions/recent/:num	controllers.Event.recentExceptions(num: Integer)
 
 # Contacts
 GET		/contacts/all				controllers.Contact.list()
@@ -45,18 +43,10 @@ POST	/contacts					controllers.Contact.add()
 PUT		/contacts/:id				controllers.Contact.update(id: Long)
 DELETE	/contacts/:id				controllers.Contact.delete(id: Long)
 
-# Map
-GET		/map/sheep/:id				controllers.Map.sheep(id: Long)
-GET		/map/event/:id				controllers.Map.event(id: Long)
-GET 	/map						controllers.Map.index()
-
-# Misc
-
-		
-
 # Admin pages
 GET 	/admin						controllers.Admin.index()
 GET 	/admin/cp					controllers.Admin.cp()
+GET 	/admin/users				controllers.Admin.listUsers()
 GET		/admin/login				controllers.Admin.login()
 POST	/admin/login				controllers.Admin.authenticate()
 GET		/admin/logout				controllers.Admin.logout()

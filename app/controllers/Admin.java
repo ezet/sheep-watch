@@ -1,5 +1,7 @@
 package controllers;
 
+import java.util.List;
+
 import models.Login;
 import models.User;
 
@@ -58,8 +60,11 @@ public class Admin extends Controller {
 	}
 	
 	public static Result add() {
-		JsonNode json = request().body().asJson();
-		User user = form(User.class).bindFromRequest().get();
+		Form<User> form = form(User.class).bindFromRequest();
+		if (form.hasErrors()) {
+			return badRequest(form.errorsAsJson());
+		} 
+		User user = form.get();
 		user.save();
 		return redirect(routes.Admin.cp());
 	}
@@ -67,6 +72,11 @@ public class Admin extends Controller {
 	public static Result update(long id) {
 		
 		return TODO;
+	}
+	
+	public static Result listUsers() {
+		List<models.User> users = models.User.findAll();
+		return ok();
 	}
 	
 	public static Result delete(long id) {
@@ -81,7 +91,8 @@ public class Admin extends Controller {
 		return ok(Routes.javascriptRouter("jsAdminRoutes",
 
 				// Admin routes
-				controllers.routes.javascript.Admin.add()
+				controllers.routes.javascript.Admin.add(),
+				controllers.routes.javascript.Admin.listUsers()
 
 		));
 	}

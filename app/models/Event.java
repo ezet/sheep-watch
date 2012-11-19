@@ -34,6 +34,9 @@ public class Event extends Model {
 	public long id;
 	
 	@Transient
+	public Long sheepId;
+	
+	@Transient
 	public Long sheepPid;
 	
 	@Column(nullable=false)
@@ -62,23 +65,23 @@ public class Event extends Model {
 	public static Model.Finder<Long, Event> find = new Model.Finder<Long, Event>(Long.class, Event.class);
 
 	public static List<Event> findByProducerId(Long producerId, int num) {
-		return find.where().eq("sheep.user.producerId", producerId).orderBy("timeSent").setMaxRows(num).findList();
+		return find.where().eq("sheep.user.producerId", producerId).order().desc("timeSent").setMaxRows(num).findList();
 	}
 	
 	public static List<Event> findTypeByProducerId(long producerId, MessageType type, int num) {
-		return find.where().eq("sheep.user.producerId", producerId).eq("messageType", type).orderBy("timeSent").setMaxRows(num).findList();
+		return find.where().eq("sheep.user.producerId", producerId).eq("messageType", type).order().desc("timeSent").setMaxRows(num).findList();
 	}
 	
 	public static List<Event> findLatestEvents(long producerId) {
-		return find.where().eq("sheep.user.producerId", producerId).orderBy("timeSent").findList();
+		return find.where().eq("sheep.user.producerId", producerId).order().desc("timeSent").findList();
 	}
 	
 	public static Event findLatestEvent(long sheepId) {
-		return find.where().eq("sheep.sheepPid", sheepId).orderBy("timeSent").setMaxRows(1).findUnique();
+		return find.where().eq("sheep.sheepPid", sheepId).order().desc("timeSent").setMaxRows(1).findUnique();
 	}
 	
 	public static List<Event> findBySheepId(Long id) {
-		return find.where().eq("sheep.id", id).orderBy("timeSent").findList();
+		return find.where().eq("sheep.id", id).order().desc("timeSent").findList();
 	}
 
 	public static List<Event> findByRfid(long id) {

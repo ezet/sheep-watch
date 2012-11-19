@@ -66,7 +66,7 @@ public class Sheep extends Controller {
 			return badRequest(sheepForm.errorsAsJson());
 		} else {
 			models.Sheep sheep = sheepForm.get();
-			sheep.user = User.find.ref(Long.valueOf(session("producerId")));
+			sheep.user = User.find.ref(Long.valueOf(session("userId")));
 			sheep.save();
 			sheep.refresh();
 			jsonPrepare(sheep);

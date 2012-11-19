@@ -2,12 +2,17 @@ package controllers;
 
 import play.Logger;
 import play.data.Form;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
 @Security.Authenticated(Auth.class)
 public class Contact extends Controller {
+	
+	public static void jsonPrepare(models.Contact contact) {
+		contact.user = null;
+	}
 
 	public static Result list() {
 		return TODO;
@@ -24,14 +29,15 @@ public class Contact extends Controller {
 			return badRequest(form.errorsAsJson());
 		} else {
 			models.Contact contact = form.get();
-			contact.user = models.User.find.ref(Long.valueOf(session("producerId")));
+			contact.user = models.User.find.ref(Long.valueOf(session("userId")));
 			try {
 				contact.save();
 				contact.refresh();
 			} catch (Exception e) {
 				return badRequest();
 			}
-			return ok(String.valueOf(contact.id));
+			jsonPrepare(contact);
+			return ok(Json.toJson(contact));
 		}
 	}
 

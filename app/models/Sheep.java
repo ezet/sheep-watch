@@ -68,10 +68,6 @@ public class Sheep extends Model {
 
 	public static Model.Finder<Long, Sheep> find = new Model.Finder<Long, Sheep>(Long.class, Sheep.class);
 
-	public static Sheep create(long id, long rfid, long producerId) {
-		return new Sheep();
-	}
-	
 	public static List<Sheep> findByUserId(Long id) {
 		return find.where().eq("user.id", id).findList();
 	}

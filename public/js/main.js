@@ -32,27 +32,27 @@ function initMap() {
 }
 
 function disableTableToolbar() {
-	$('.edit-sheep-button').addClass('disabled');
-	$('.delete-sheep-button').addClass('disabled');
+	$('.edit-sheep-button').attr('disabled', '');
+	$('.delete-sheep-button').attr('disabled', '');
 }
 
 function enableTableToolbar() {
-	$('.edit-sheep-button').removeClass('disabled');
-	$('.delete-sheep-button').removeClass('disabled');
+	$('.edit-sheep-button').removeAttr('disabled');
+	$('.delete-sheep-button').removeAttr('disabled');
 }
 
-// Sheep Table Toolbar
+//Sheep Table Toolbar
 function initSheepToolbar() {
 	$('#add-sheep-form').ajaxForm({
-		beforeSubmit: showRequest,
-		success: function() {
+		dataType: 'json',
+		success: function(data) {
+			sheepTable.fnAddData(data);
 			$.pnotify({
 				text: 'Sheep was successfully added.',
 				type: 'success',
 			});
 			$('#add-sheep-modal').modal('hide');
-			$(this).clearForm();
-			// TODO add sheep to table
+			$('#add-sheep-form').clearForm();
 		},
 		error: function() {
 			$.pnotify({
@@ -87,7 +87,6 @@ function initSheepToolbar() {
 	});
 
 	$('#edit-sheep-form').ajaxForm({
-		beforeSubmit: showRequest,
 		success: function() {
 			$.pnotify({
 				text: 'Sheep was successfully updated.',
@@ -151,6 +150,7 @@ function initSheepTable() {
 			$(this).removeClass('row-selected');
 			disableTableToolbar();
 			sheepTable.selectedId = null;
+			eventTable.fnFilter("", 1);
 		} else {
 			sheepTable.selectedId = sheepTable.fnGetData(this, 0);
 			sheepTable.$('tr.row-selected').removeClass('row-selected');
@@ -165,10 +165,13 @@ function initSheepTable() {
 				dataType : 'json',
 				success : function(data) {
 					mainMap.clearMarkers();
-					eventTable.fnFilter(sheepPid, 1);
+					eventTable.fnFilter("^\\s*"+ sheepPid +"\\s*$", 1, true, false);
 					if (data.data.length) {
 						$('#sheep-page .alert').hide();
 						$.each(data.data, function(k, event) {
+							if (k > 20) {
+								return false;
+							}
 							var marker = mainMap.addEventMarker(event);
 						});
 						mainMap.fitBounds();
@@ -198,16 +201,28 @@ function initSheepTable() {
 		"aoColumns" : [ {
 			"mData" : "id",
 			"bVisible" : false,
+			"bSearchable" : false,
 		}, {
-			"mData" : "sheepPid"
+			"mData" : "sheepPid",
+			"bSmart" : false,
+			"bRegex" : true,
+			"sSearch" : "^\\s*"+'1'+"\\s*$"
 		}, {
-			"mData" : "rfid"
+			"mData" : "rfid",
+			"bSmart" : false,
+			"bRegex" : true,
+			"sSearch" : "^\\s*"+'1'+"\\s*$"
 		}, {
-			"mData" : "name"
+			"mData" : "name",
+			"bSmart" : false,
+			"bRegex" : true,
+			"sSearch" : "^\\s*"+'1'+"\\s*$"
 		}, {
-			"mData" : "birthWeight"
+			"mData" : "birthWeight",
+			"bSearchable" : false
 		}, {
-			"mData" : "dateOfBirth"
+			"mData" : "dateOfBirth",
+			"bSearchable" : false
 		} ]
 	}).fnSetFilteringDelay();
 
@@ -223,7 +238,8 @@ function initEventList() {
 			eventTable.$('tr.row-selected').removeClass('row-selected');
 			$(this).addClass('row-selected');
 			var id = eventTable.fnGetData(this, 0)
-			fetchAndDisplaySheep(id);
+			var sheepId = eventTable.fnGetData(this).sheepId;
+			fetchAndDisplaySheep(sheepId);
 			jsRoutes.controllers.Event.show(id).ajax({
 				dataType : 'json',
 				success : function(data) {
@@ -246,41 +262,45 @@ function initEventList() {
 		"aoColumns" : [ {
 			"mData" : "id",
 			"bVisible" : false,
+			"bSearchable" : false
 		}, {
-			"mData" : "sheepPid"
+			"mData" : "sheepPid",
+			"bSmart" : false,
+			"bRegex" : true,
+			"sSearch" : "^\\s*"+'1'+"\\s*$"
 		}, {
-			"mData" : "messageType"
+			"mData" : "messageType",
+			"bSmart" : false,
+			"bRegex" : true,
+			"sSearch" : "^\\s*"+'2'+"\\s*$"
 		}, {
-			"mData" : "timeSent"
+			"mData" : "timeSent",
+			"bSearchable" : false
 		}, {
-			"mData" : "pulse"
+			"mData" : "pulse",
+			"bSearchable" : false
 		}, {
-			"mData" : "temperature"
+			"mData" : "temperature",
+			"bSearchable" : false
 		} ]
 	}).fnSetFilteringDelay();
-}
-
-function showRequest(formData, jqForm, options) {
-	console.log($(this));
-	console.log("Request: " + $.param(formData));
-	return true;
-}
-
-function showResponse(responseText, statusText, xhr, $form) {
-	console.log("Response: status: " + statusText + "\nResponseText:\n"
-			+ responseText);
 }
 
 function initButtons() {
 
 	$('.contact-form').ajaxForm({
-		beforeSubmit: showRequest,
-		success: function() {
-			$.pnotify({
-				text : 'Contact was successfully updated',
-				type : 'success'
-			});
-			// TODO add id and set up delete/edit buttons
+		beforeSubmit: function(formData, jqForm) {
+			this.success = function(data) {
+				$.pnotify({
+					text : 'Contact was successfully updated',
+					type : 'success'
+				});
+				if (jqForm.attr('id') == 'new-contact-form') {
+					jqForm.find('.contact-form-delete').removeAttr("disabled");
+
+					jqForm.parents('.widget-box').find('h5').text(data.name);
+				}
+			};
 		},
 		error: function() {
 			$.pnotify({
@@ -309,9 +329,13 @@ function initButtons() {
 		});
 	});
 
+	var counter = 0;
 	$('#new-contact-button').on('click', function(e) {
-		var form = $('#new-contact-form').clone(true, true);
-		$('#contact-forms').append(form);
+		var form = $('#new-contact-widget').clone(true, true).removeAttr('id');
+		form.find('.collapse').attr('id', 'new-contact-collapse-' + counter);
+		form.find('.widget-title a').attr('href', '#new-contact-collapse-' + counter);
+		counter++;
+		$('#contact-forms').prepend(form);
 		form.show('slow');
 	});
 
@@ -335,7 +359,6 @@ function displaySheep(data) {
 	sheep.find('#sheep-birth').text(data.dateOfBirth);
 	sheep.find('#sheep-notes').text(data.notes);
 	sheep.find('#sheep-attacked').text(data.attacked);
-	sheep.find('.disabled').removeClass('disabled');
 }
 
 function clearSheepDetails() {
@@ -347,7 +370,6 @@ function clearSheepDetails() {
 	sheep.find('#sheep-birth').empty();
 	sheep.find('#sheep-notes').empty();
 	sheep.find('#sheep-attacked').empty();
-	sheep.find('.btn').addClass('disabled');
 }
 
 function fetchAndDisplayEvent(id) {
@@ -375,26 +397,34 @@ function init() {
 		var id = $(this).attr('data-event-id');
 		fetchAndDisplayEvent(id);
 	});
-
 	$.pnotify.defaults.delay = 5000;
 	checkNewEvents();
 }
 
-var newEventInterval = window.setInterval('checkNewEvents', 30000);
+var newEventInterval = window.setInterval('checkNewEvents()', 15000);
 var lastId;
 
 var checkNewEvents = function() {
-	jsRoutes.controllers.Event.alarmList(1).ajax({
+	jsRoutes.controllers.Event.listLimit(10).ajax({
 		dataType: 'json',
-		success: function(data) {
-			if (data.id != lastId) {
-				$.pnotify({
-					title : "New alarm!",
-					text : "A new alarm has been registered and the tables have been updated.",
-					type : "info",
-					hide : false
+		success: function(json) {
+			var data = json.data;
+			if (data.length) {
+				$.each(data, function(key, event) {
+					if (!lastId || event.id == lastId) {
+						return false;
+					}
+					if (event.messageType == 'ALARM') {
+						$.pnotify({
+							title : "New alarm!",
+							text : "A new alarm has been registered and the tables have been updated.",
+						});
+					}
+					eventTable.fnAddData(event);
 				});
-				lastId = data.id;
+				lastId = data[0].id;
+			} else {
+				lastId = -1;
 			}
 		}
 	});

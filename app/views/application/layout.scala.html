@@ -32,8 +32,7 @@
 <div id="sidebar">@navbar(page)</div>
 <div id="content">
 	<div id="content-header"><h1>@title</h1></div>
-	<div id="breadcrumb"><a href="#" class="tip-bottom" data-original-title="Go to Home"><i class="icon-home"></i> Home</a> >
-	<a href="#" data-original-title="Go to Home">@page</a>
+	<div id="breadcrumb"><a href="#" class="tip-bottom" data-original-title="Go to Home"><i class="icon-home"></i> Home</a><a href="#" data-original-title="Go to Home">@page</a>
 	</div>
 
 	<div class="container-fluid">@content</div>
@@ -45,4 +44,4 @@
 		<p>&copy; Sheep Watch 2012</p>
 	</div>
 </footer>
-@settingsModal() @footer()
+@footer()
