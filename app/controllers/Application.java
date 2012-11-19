@@ -36,7 +36,7 @@ public class Application extends Controller {
 	}
 
 	public static Result contacts() {
-		List<Form<models.Contact>> contactForms = new ArrayList<>();
+		List<Form<models.Contact>> contactForms = new ArrayList<Form<models.Contact>>();
 		List<models.Contact> contacts = models.Contact.findByUserId(Long.valueOf(session("userId")));
 		for (models.Contact contact : contacts) {
 			Form<models.Contact> contactForm = form("form", models.Contact.class);

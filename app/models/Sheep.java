@@ -50,7 +50,7 @@ public class Sheep extends Model {
 	
 	
 	@OneToMany(mappedBy="sheep", cascade=CascadeType.ALL)
-	public List<Event> events = new ArrayList<>();
+	public List<Event> events = new ArrayList<Event>();
 
 	public String name;
 	

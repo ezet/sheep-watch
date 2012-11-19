@@ -52,7 +52,7 @@ public class Contact extends Model {
 		this.phone = phone;
 	}
 
-	public static Model.Finder<Long, Contact> find = new Model.Finder<>(Long.class, Contact.class);
+	public static Model.Finder<Long, Contact> find = new Model.Finder<Long, Contact>(Long.class, Contact.class);
 
 	public static List<Contact> findByUserId(Long userId) {
 		return find.where().eq("user.id", userId).findList();

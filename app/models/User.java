@@ -53,12 +53,12 @@ public class User extends Model {
 	public Integer accessLevel;
 	
 	@OneToMany(mappedBy="user", cascade=CascadeType.ALL)
-	public List<Contact> contacts = new ArrayList<>();
+	public List<Contact> contacts = new ArrayList<Contact>();
 	
 	@OneToMany(mappedBy="user", cascade=CascadeType.ALL)
-	public List<Sheep> sheep = new ArrayList<>();
+	public List<Sheep> sheep = new ArrayList<Sheep>();
 
-	public static Model.Finder<Long, User> find = new Model.Finder<>(Long.class, User.class);
+	public static Model.Finder<Long, User> find = new Model.Finder<Long, User>(Long.class, User.class);
 
 	public static List<User> findAll() {
 		return find.all();
