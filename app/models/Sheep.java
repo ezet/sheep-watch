@@ -54,8 +54,8 @@ public class Sheep extends Model {
 	@Column(unique = true, nullable = false)
 	public Long rfid;
 
-	@OneToMany(mappedBy = "sheep", cascade = CascadeType.ALL)
-	public List<Event> events = new ArrayList<>();
+	@OneToMany(mappedBy="sheep", cascade=CascadeType.ALL)
+	public List<Event> events = new ArrayList<Event>();
 
 	public String name;
 

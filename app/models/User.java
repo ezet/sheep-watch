@@ -57,17 +57,17 @@ public class User extends Model {
 
 	@Column(nullable = false)
 	public Integer accessLevel;
-
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	public List<Contact> contacts = new ArrayList<>();
-
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	public List<Sheep> sheep = new ArrayList<>();
+	
+	@OneToMany(mappedBy="user", cascade=CascadeType.ALL)
+	public List<Contact> contacts = new ArrayList<Contact>();
+	
+	@OneToMany(mappedBy="user", cascade=CascadeType.ALL)
+	public List<Sheep> sheep = new ArrayList<Sheep>();
 
 	/**
 	 * User finder
 	 */
-	public static Model.Finder<Long, User> find = new Model.Finder<>(Long.class, User.class);
+	public static Model.Finder<Long, User> find = new Model.Finder<Long, User>(Long.class, User.class);
 
 	/**
 	 * Fetches a list of all users

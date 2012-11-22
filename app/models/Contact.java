@@ -58,7 +58,7 @@ public class Contact extends Model {
 	/**
 	 * Contact finder
 	 */
-	public static Model.Finder<Long, Contact> find = new Model.Finder<>(Long.class, Contact.class);
+	public static Model.Finder<Long, Contact> find = new Model.Finder<Long, Contact>(Long.class, Contact.class);
 
 	/**
 	 * Fetches a list of all contacts owned by provided user ID
