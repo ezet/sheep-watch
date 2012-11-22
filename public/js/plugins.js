@@ -16,8 +16,6 @@ if (!(window.console && console.log)) {
 	}());
 }
 
-// Place any jQuery/helper plugins in here.
-
 // Processing Indicator
 jQuery.fn.dataTableExt.oApi.fnProcessingIndicator = function(oSettings, onoff) {
 	if (typeof (onoff) == 'undefined') {
@@ -61,6 +59,8 @@ jQuery.fn.dataTableExt.oApi.fnSetFilteringDelay = function(oSettings, iDelay) {
 	return this;
 }
 
+
+// Delete a table row
 $.fn.dataTableExt.oApi.fnDeleteRows = function(oSettings, sSearch, iColumn) {
 	for (var i = 0; i < oSettings.aoData.length; i++) {
 		aData = oSettings.aoData[i]._aData;

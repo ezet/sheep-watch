@@ -1,16 +1,50 @@
+// Initialize application
 $(document).ready(function() {
 	init();
 	initSheepToolbar();
 	initButtons();
 	initMap();
 	initSheepTable();
-	initEventList();
-	recentAlarmsCall();
+	initEventTable();
+//	initSheepTools();
 });
 
-var mainMap = new gmap("map-canvas");
+// General initialization
+function init() {
+	$('#recent-alarms-list').on('click', 'a', function(e) {
+		e.preventDefault();
+		var id = $(this).attr('data-event-id');
+		var sheepId = $(this).attr('data-sheep-id');
+		fetchAndDisplayEvent(id);
+		fetchAndDisplaySheep(sheepId);
+	});
+	$.pnotify.defaults.delay = 5000;
+	checkNewEvents();
+	initRecentAlarms();
+}
 
-function showAllAlarms() {
+var mainMap = new gmap("map-canvas");
+//var sheepToolbar = new sheepToolbar();
+
+function initSheepTools() {
+	if ($("#sheep-table").length) {
+		sheepToolbar.init();
+	}
+}
+
+// Initializes main map
+function initMap() {
+	if ($('#map-canvas').length) {
+		mainMap.init();
+		showCurrentPos();
+	}
+	$('#show-current-pos-button').on('click', function() {
+		showCurrentPos();
+	});
+}
+
+// Fetches and display recent alarms on the map
+function showRecentAlarms(limit) {
 	jsRoutes.controllers.Event.alarmList(5).ajax({
 		dataType : 'json',
 		success : function(data) {
@@ -25,18 +59,9 @@ function showAllAlarms() {
 	});
 }
 
-function initMap() {
-	if ($('#map-canvas').length) {
-		mainMap.init();
-		showCurrentPos();
-	}
-	
-	$('#show-current-pos-button').on('click', function() {
-		showCurrentPos();
-	});
-}
 
 
+// Fetches and displays current position of all sheep on the map
 function showCurrentPos() {
 	jsRoutes.controllers.Sheep.positions().ajax({
 		dataType: 'json',
@@ -51,6 +76,7 @@ function showCurrentPos() {
 	});
 }
 
+// 
 function disableTableToolbar() {
 	$('.edit-sheep-button').attr('disabled', '');
 	$('.delete-sheep-button').attr('disabled', '');
@@ -61,7 +87,7 @@ function enableTableToolbar() {
 	$('.delete-sheep-button').removeAttr('disabled');
 }
 
-//Sheep Table Toolbar
+// Initializes the Sheep Table Toolbar
 function initSheepToolbar() {
 	$('#add-sheep-form').ajaxForm({
 		dataType: 'json',
@@ -146,25 +172,30 @@ function initSheepToolbar() {
 	});
 }
 
+// Gets the currently selected row in sheep table
 function getSelectedRow() {
 	var row = sheepTable.$('tr.row-selected');
 	return row;
 }
 
+// Gets the currently selected ID in sheep table
 function getSelectedId() {
 	var row = sheepTable.$('tr.row-selected');
 	var id = sheepTable.fnGetData(row.get(0), 0);
 	return id;
 }
 
+// Gets the currently selected sheep PID in the sheep table
 function getSelectedSheepId() {
 	var row = sheepTable.$('tr.row-selected');
 	var id = sheepTable.fnGetData(row.get(0), 1);
 	return id;
 }
 
+// Initializes the sheep table
 function initSheepTable() {
-	// Sheep table selection
+	
+	// Sheep table selection behaviour
 	$("#sheep-table tbody").on('click', 'tr', function(e) {
 		if ($(this).hasClass('row-selected')) {
 			$(this).removeClass('row-selected');
@@ -210,7 +241,8 @@ function initSheepTable() {
 			});
 		}
 	});
-
+	
+	// Initializes the table itself
 	sheepTable = $("#sheep-table").dataTable({
 		"sDom": 'lfrtip',
 		"bJQueryUI": true,
@@ -246,11 +278,12 @@ function initSheepTable() {
 		} ]
 	}).fnSetFilteringDelay();
 
-//	$('#sheep-table_length').before($('#sheep-table-toolbar'));
-
 }
 
-function initEventList() {
+
+// Initializes the event table
+function initEventTable() {
+	// Initializes interaction
 	$("#event-list tbody").on('click', 'tr', function(e) {
 		if ($(this).hasClass('row-selected')) {
 			$(this).removeClass('row-selected');
@@ -269,6 +302,7 @@ function initEventList() {
 		}
 	});
 
+	// Initializes the table itself
 	eventTable = $("#event-list").dataTable({
 		"sDom": 'lfrtip',
 		"bJQueryUI": true,
@@ -303,8 +337,9 @@ function initEventList() {
 	}).fnSetFilteringDelay();
 }
 
+// Initializes various user interaction
 function initButtons() {
-
+	// Set up adding and editing contacts
 	$('.contact-form').ajaxForm({
 		beforeSubmit: function(formData, jqForm) {
 			this.success = function(data) {
@@ -326,7 +361,7 @@ function initButtons() {
 			});
 		}
 	});
-
+	// Set up deleting contacts 
 	$('.contact-form-delete').on('click', function(e) {
 		var id = $(this).attr("data-contact-id");
 		jsRoutes.controllers.Contact.delete(id).ajax({
@@ -346,6 +381,7 @@ function initButtons() {
 		});
 	});
 
+	// Set up new contact forms
 	var counter = 0;
 	$('#new-contact-button').on('click', function(e) {
 		var form = $('#new-contact-widget').clone(true, true).removeAttr('id');
@@ -358,6 +394,7 @@ function initButtons() {
 
 }
 
+// Fetches and display info on a sheep
 function fetchAndDisplaySheep(id) {
 	jsRoutes.controllers.Sheep.show(id).ajax({
 		dataType : 'json',
@@ -365,6 +402,7 @@ function fetchAndDisplaySheep(id) {
 	});
 }
 
+// Display details on a sheep
 function displaySheep(data) {
 	var sheep = $('#sheep-details');
 	sheep.find('#sheep-id').text(data.sheepPid);
@@ -378,6 +416,8 @@ function displaySheep(data) {
 	sheep.find('#sheep-attacked').text(data.attacked);
 }
 
+
+// Clears all sheep details
 function clearSheepDetails() {
 	var sheep = $('#sheep-details');
 	sheep.find('#sheep-id').empty();
@@ -389,6 +429,8 @@ function clearSheepDetails() {
 	sheep.find('#sheep-attacked').empty();
 }
 
+
+// Fetch and display details for an event
 function fetchAndDisplayEvent(id) {
 	jsRoutes.controllers.Event.show(id).ajax({
 		dataType : 'json',
@@ -396,6 +438,7 @@ function fetchAndDisplayEvent(id) {
 	});
 }
 
+// Display details about an event
 function displayEvent(data) {
 	var events = $('#event-details');
 	events.find('.event-type').text(data.messageType);
@@ -410,22 +453,10 @@ function displayEvent(data) {
 	mainMap.addEventMarker(data, true);
 }
 
-function init() {
-	$('#recent-alarms-list').on('click', 'a', function(e) {
-		e.preventDefault();
-		var id = $(this).attr('data-event-id');
-		var sheepId = $(this).attr('data-sheep-id');
-		fetchAndDisplayEvent(id);
-		fetchAndDisplaySheep(sheepId);
-	});
-	$.pnotify.defaults.delay = 5000;
-	checkNewEvents();
-	initRecentAlarms();
-}
 
+// Set up background checks for new events
 var newEventInterval = window.setInterval('checkNewEvents()', 15000);
 var lastId;
-
 var checkNewEvents = function() {
 	jsRoutes.controllers.Event.listLimit(10).ajax({
 		dataType: 'json',
@@ -455,6 +486,7 @@ var checkNewEvents = function() {
 	});
 }
 
+// Inserts a new recent event in recent events list, and removes old ones if needed
 function insertRecentAlarmItem(event) {
 	var list = $('#recent-alarms-list');
 	var li = '<li><a href="#" data-event-id=' + event.id
@@ -467,6 +499,7 @@ function insertRecentAlarmItem(event) {
 	
 }
 
+// Sets up initial list of recent alarms
 function initRecentAlarms() {
 	jsRoutes.controllers.Event.alarmList(5).ajax({
 		dataType: 'json',
@@ -474,23 +507,6 @@ function initRecentAlarms() {
 			$.each(data, function(key, event) {
 				insertRecentAlarmItem(event);
 			});
-		}
-	});
-}
-
-var recentAlarmsInterval = window.setInterval('recentAlarmsCall()', 30000);
-var recentAlarmsCall = function() {
-	jsRoutes.controllers.Event.alarmList(5).ajax({
-		dataType : 'json',
-		success : function(data) {
-			var html = "<ul>";
-			$.each(data, function(k, v) {
-				html = html + '<li><a href="#" data-event-id=' + v.id
-				+ '>ID ' + v.sheepPid + ' (' + v.timeSent
-				+ ')</a></li>';
-			});
-			var recentAlarms = $('#recent-alarms .accordion-inner')
-			.html(html);
 		}
 	});
 }
