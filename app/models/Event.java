@@ -78,7 +78,7 @@ public class Event extends Model {
 	 * @return A list of events
 	 */
 	public static List<Event> findByUserId(Long userId, int limit) {
-		return find.where().eq("sheep.user.userId", userId).orderBy().desc("timeSent").setMaxRows(limit).findList();
+		return find.where().eq("sheep.user.id", userId).orderBy().desc("timeSent").setMaxRows(limit).findList();
 	}
 
 	/**
