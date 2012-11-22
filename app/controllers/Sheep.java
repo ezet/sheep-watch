@@ -20,6 +20,12 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
+/**
+ * Handles all REST requests for Sheep. All requests require a valid session and user ID.
+ * 
+ * @author Lars Kristian
+ * 
+ */
 @Security.Authenticated(Auth.class)
 public class Sheep extends Controller {
 
@@ -29,12 +35,22 @@ public class Sheep extends Controller {
 		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss"));
 	}
 
+	/**
+	 * Prepared a Sheep for JSON to avoid infinite cyles
+	 * 
+	 * @param sheep The sheep to prepare
+	 */
 	public static void jsonPrepare(models.Sheep sheep) {
 		sheep.events = null;
 		sheep.userId = sheep.user.id;
 		sheep.user = null;
 	}
 
+	/**
+	 * Handles requests for a Sheep list
+	 * 
+	 * @return A json list of Sheep
+	 */
 	public static Result list() {
 		List<models.Sheep> list = models.Sheep.findByUserId(Long.valueOf(session("userId")));
 		for (models.Sheep sheep : list) {
@@ -46,6 +62,12 @@ public class Sheep extends Controller {
 		return ok(node);
 	}
 
+	/**
+	 * Handles requests for a single sheep
+	 * 
+	 * @param id The sheep ID
+	 * @return The sheep data as json
+	 */
 	public static Result show(Long id) {
 		if (!Auth.isOwnerOfSheep(id)) {
 			return unauthorized();
@@ -59,6 +81,11 @@ public class Sheep extends Controller {
 		return ok(Json.toJson(sheep));
 	}
 
+	/**
+	 * Handles requests for adding a new Sheep
+	 * 
+	 * @return The newly added sheep
+	 */
 	public static Result add() {
 		Form<models.Sheep> sheepForm = form(models.Sheep.class);
 		sheepForm = sheepForm.bindFromRequest();
@@ -88,6 +115,12 @@ public class Sheep extends Controller {
 		}
 	}
 
+	/**
+	 * Handles requests for updating a Sheep
+	 * 
+	 * @param id The sheep ID to update
+	 * @return The ID that was updated
+	 */
 	public static Result update(Long id) {
 		if (!Auth.isOwnerOfSheep(id)) {
 			return unauthorized();
@@ -105,6 +138,12 @@ public class Sheep extends Controller {
 		return ok(String.valueOf(id));
 	}
 
+	/**
+	 * Handles requests for deleting a Sheep
+	 * 
+	 * @param id The sheep ID to delete
+	 * @return The ID that was deleted
+	 */
 	public static Result delete(Long id) {
 		if (!Auth.isOwnerOfSheep(id)) {
 			return unauthorized();
@@ -117,12 +156,18 @@ public class Sheep extends Controller {
 		return ok(String.valueOf(id));
 	}
 
+	/**
+	 * Handles requests for a list of all current positions for all sheep
+	 * 
+	 * @return A list of the most recent event for every sheep
+	 */
 	public static Result positions() {
 		List<models.Sheep> sheep = models.Sheep.findByUserId(Long.valueOf(session("userId")));
 		List<models.Event> events = new ArrayList<models.Event>();
 		for (models.Sheep s : sheep) {
-			models.Event event = models.Event.findLatestEvent(s.id);
-			if (event != null) {
+			List<models.Event> sheepEvents = models.Event.findBySheepIdLimit(s.id, 1);
+			if (!sheepEvents.isEmpty()) {
+				models.Event event = sheepEvents.get(0);
 				Event.jsonPrepare(event);
 				events.add(event);
 			}
