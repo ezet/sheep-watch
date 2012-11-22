@@ -1,63 +1,50 @@
-@() @layout("home", "Home") {
+@() @layout("Home", "Home") {
 
 <!-- /navbar -->
-
-
-
-<div class="span6">
-</div>
-<div class="span3">
-	<div class="accordion" id="accordion2">
-		<div class="accordion-group">
-			<div class="accordion-heading">
-				<a class="collapsable-toggle accordion-toggle"
-					data-toggle="collapse" data-target="#recent-alarms"> Recent
-					alarms (Owned)</a>
+<div class="row-fluid">
+	<div class="span8">
+			<div class="widget-box">
+			<div class="widget-title">
+				<a class="accordion-toggle" data-toggle="collapse"
+					href="#recent-updates"><span class="icon"><i
+						class="icon-arrow-right"></i></span>
+					<h5>Some Headline</h5></a>
 			</div>
+
+			<div id="recent-updates" class="collapsable-body collapse in">
+				<div class="widget-content">Important info goes here...</div>
+			</div>
+		</div>
+	
+	</div>
+	<div class="span4">
+		<div class="widget-box collapsible">
+			<div class="widget-title">
+				<a class="accordion-toggle" data-toggle="collapse"
+					href="#recent-alarms"><span class="icon"><i
+						class="icon-arrow-right"></i></span>
+					<h5>Recent alarms</h5></a>
+			</div>
+
 			<div id="recent-alarms" class="collapsable-body collapse in">
-				<div class="accordion-inner">loading...</div>
+				<div class="widget-content"><ul id="recent-alarms-list"></ul></div>
 			</div>
 		</div>
-		<div class="accordion-group">
-			<div class="accordion-heading">
+		<div class="widget-box collapsible">
+			<div class="widget-title">
 				<a class="accordion-toggle" data-toggle="collapse"
-					data-target="#recent-exceptions">Recent exceptions</a>
+					href="#recent-updates"><span class="icon"><i
+						class="icon-arrow-right"></i></span>
+					<h5>Recent Updates</h5></a>
 			</div>
-			<div id="recent-exceptions" class="collapsable-body collapse in">
-				<div class="accordion-inner">loading...</div>
-			</div>
-		</div>
-		<div class="accordion-group">
-			<div class="accordion-heading">
-				<a class="accordion-toggle" data-toggle="collapse"
-					data-target="#recent-alarms2">Recent alarms (Nearby)</a>
-			</div>
-			<div id="recent-alarms2" class="collapsable-body collapse in">
-				<div class="accordion-inner">Recent alarms content</div>
-			</div>
-		</div>
-		<div class="accordion-group">
-			<div class="accordion-heading">
-				<a class="accordion-toggle" data-toggle="collapse"
-					data-target="#map-settings">Map settings</a>
-			</div>
-			<div id="map-settings" class="collapsable-body collapse in">
-				<div class="accordion-inner">
-					<div id="map-settings">
-						<label class="checkbox"> <input type="checkbox"
-							name="group" value="1" /> Show attacks on your animals
-						</label> </label> <label class="checkbox"> <input type="checkbox"
-							name="group" value="2" /> Show exceptions
-						</label> <label class="checkbox"> <input type="checkbox"
-							name="group" value="3" /> Show other attacks
-						</label>
-					</div>
-				</div>
-			</div>
-		</div>
 
+			<div id="recent-updates" class="collapsable-body collapse in">
+				<div class="widget-content">Recent Updates</div>
+			</div>
+		</div>
 
 	</div>
 </div>
+
 
 }

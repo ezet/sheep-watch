@@ -102,6 +102,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Sheep.list(),
 				controllers.routes.javascript.Sheep.delete(),
 				controllers.routes.javascript.Sheep.show(),
+				controllers.routes.javascript.Sheep.positions(),
 
 				// Events
 				controllers.routes.javascript.Event.list(),

@@ -3,6 +3,7 @@ package controllers;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.List;
 
 import models.Event.MessageType;
@@ -12,7 +13,6 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 
-import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -98,7 +98,8 @@ public class Event extends Controller {
 	}
 
 	public static Result alarmList(Integer num) {
-		List<models.Event> events = models.Event.findTypeByProducerId(Long.valueOf(session("producerId")), MessageType.ALARM, num);
+		List<models.Event> events = models.Event.findTypeByUserId(Long.valueOf(session("userId")), MessageType.ALARM, num);
+		Collections.reverse(events);
 		for (models.Event event : events) {
 			jsonPrepare(event);
 		}

@@ -1,8 +1,3 @@
-var locations = [ [ 'Sau 01', 62.2, 9 ], [ 'Sau 02', 62, 9.1 ],
-                  [ 'Sau 03', 62.3, 8.9 ], [ 'Sau 04', 62, 9 ] ];
-
-
-
 function gmap(selector) {
 	this.selector = selector
 	this.defaultZoom = 12;
@@ -48,29 +43,6 @@ function gmap(selector) {
 				myOptions);
 		this.map.mapTypes.set('STATKART', this.statKartType);
 
-		var infoWindow = new google.maps.InfoWindow();
-		var bounds = new google.maps.LatLngBounds();
-		var marker, i;
-
-		for (i = 0; i < locations.length; i++) {
-			var markerLatLng = new google.maps.LatLng(locations[i][1],
-					locations[i][2])
-			marker = new google.maps.Marker({
-				position : markerLatLng,
-				map : this.map
-			});
-			bounds.extend(markerLatLng);
-
-			this.markers.push(marker);
-			google.maps.event.addListener(marker, 'click',
-					(function(marker, i) {
-						return function() {
-							infoWindow.setContent(locations[i][0]);
-							infoWindow.open(this.map, marker);
-						};
-					})(marker, i));
-		}
-		this.map.fitBounds(bounds);
 	}
 
 	this.fitBounds = function() {

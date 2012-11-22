@@ -22,8 +22,8 @@ GET		/logout 					controllers.Application.logout()
 
 # Sheep
 GET 	/sheep/all					controllers.Sheep.list()
+GET		/sheep/positions			controllers.Sheep.positions()
 GET 	/sheep/:id					controllers.Sheep.show(id: Long)
-GET		/sheep/:id/position			controllers.Sheep.position(id: Long)
 GET		/sheep/:id/events			controllers.Event.listBySheep(id: Long)
 POST	/sheep 						controllers.Sheep.add()
 PUT		/sheep/:id					controllers.Sheep.update(id: Long)

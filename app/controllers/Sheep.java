@@ -3,6 +3,7 @@ package controllers;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import models.User;
@@ -21,13 +22,13 @@ import play.mvc.Security;
 
 @Security.Authenticated(Auth.class)
 public class Sheep extends Controller {
-	
+
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	static {
 		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss"));
 	}
-	
+
 	public static void jsonPrepare(models.Sheep sheep) {
 		sheep.events = null;
 		sheep.userId = sheep.user.id;
@@ -87,7 +88,6 @@ public class Sheep extends Controller {
 		}
 	}
 
-
 	public static Result update(Long id) {
 		if (!Auth.isOwnerOfSheep(id)) {
 			return unauthorized();
@@ -116,18 +116,17 @@ public class Sheep extends Controller {
 		}
 		return ok(String.valueOf(id));
 	}
-	
-	public static Result position(Long sheep) {
-		if (!Auth.isOwnerOfSheep(sheep)) {
-			return unauthorized();
-		}
-		models.Event event = models.Event.findLatestEvent(sheep);
-		if (event == null) {
-			return notFound();
-		}
-		event.sheepPid = event.sheep.sheepPid;
-		event.sheep = null;
-		return ok(Json.toJson(event));
-	}
 
+	public static Result positions() {
+		List<models.Sheep> sheep = models.Sheep.findByUserId(Long.valueOf(session("userId")));
+		List<models.Event> events = new ArrayList<models.Event>();
+		for (models.Sheep s : sheep) {
+			models.Event event = models.Event.findLatestEvent(s.id);
+			if (event != null) {
+				Event.jsonPrepare(event);
+				events.add(event);
+			}
+		}
+		return ok(Json.toJson(events));
+	}
 }

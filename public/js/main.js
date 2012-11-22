@@ -28,7 +28,27 @@ function showAllAlarms() {
 function initMap() {
 	if ($('#map-canvas').length) {
 		mainMap.init();
+		showCurrentPos();
 	}
+	
+	$('#show-current-pos-button').on('click', function() {
+		showCurrentPos();
+	});
+}
+
+
+function showCurrentPos() {
+	jsRoutes.controllers.Sheep.positions().ajax({
+		dataType: 'json',
+		success : function(data) {
+			mainMap.clearMarkers();
+			$.each(data, function(key, event){
+				mainMap.addEventMarker(event, false);
+				mainMap.fitBounds();
+			});
+		}
+		
+	});
 }
 
 function disableTableToolbar() {
@@ -244,9 +264,6 @@ function initEventList() {
 				dataType : 'json',
 				success : function(data) {
 					displayEvent(data);
-					mainMap.clearMarkers();
-					var marker = mainMap.addEventMarker(data);
-					mainMap.center(marker);
 				}
 			});
 		}
@@ -314,7 +331,7 @@ function initButtons() {
 		var id = $(this).attr("data-contact-id");
 		jsRoutes.controllers.Contact.delete(id).ajax({
 			success: function(data) {
-				$('#contact-form-'+id).hide("fast", function() { $(this).remove() });
+				$('#contact-form-'+id).closest($(".widget-box")).hide("slow", function() { $(this).remove() });
 				$.pnotify({
 					text: "Contact was successfully deleted.",
 					type : "success"
@@ -389,16 +406,21 @@ function displayEvent(data) {
 	events.find('.event-pulse').text(data.pulse);
 	events.find('.event-lat').text(data.latitude);
 	events.find('.event-long').text(data.longitude);
+	mainMap.clearMarkers();
+	mainMap.addEventMarker(data, true);
 }
 
 function init() {
-	$('#recent-alarms').on('click', 'a', function(e) {
+	$('#recent-alarms-list').on('click', 'a', function(e) {
 		e.preventDefault();
 		var id = $(this).attr('data-event-id');
+		var sheepId = $(this).attr('data-sheep-id');
 		fetchAndDisplayEvent(id);
+		fetchAndDisplaySheep(sheepId);
 	});
 	$.pnotify.defaults.delay = 5000;
 	checkNewEvents();
+	initRecentAlarms();
 }
 
 var newEventInterval = window.setInterval('checkNewEvents()', 15000);
@@ -418,7 +440,10 @@ var checkNewEvents = function() {
 						$.pnotify({
 							title : "New alarm!",
 							text : "A new alarm has been registered and the tables have been updated.",
+							hide : false
 						});
+						$('#recent-alarms-list')
+						insertRecentAlarmItem(event);
 					}
 					eventTable.fnAddData(event);
 				});
@@ -426,6 +451,29 @@ var checkNewEvents = function() {
 			} else {
 				lastId = -1;
 			}
+		}
+	});
+}
+
+function insertRecentAlarmItem(event) {
+	var list = $('#recent-alarms-list');
+	var li = '<li><a href="#" data-event-id=' + event.id
+	+ ' data-sheep-id="'+event.sheepId+'">ID ' + event.sheepPid + ' (' + event.timeSent
+	+ ')</a></li>';
+	list.prepend(li);
+	if (list.children('li').length > 5) {
+		list.children('li').last().remove();
+	}
+	
+}
+
+function initRecentAlarms() {
+	jsRoutes.controllers.Event.alarmList(5).ajax({
+		dataType: 'json',
+		success: function(data) {
+			$.each(data, function(key, event) {
+				insertRecentAlarmItem(event);
+			});
 		}
 	});
 }
